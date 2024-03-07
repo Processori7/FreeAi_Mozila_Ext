@@ -5,7 +5,7 @@
   },
   "manifest_version": 2,
   "name": "Free Ai Chat everywhere",
-  "version": "16.3",
+  "version": "16.4",
   "permissions": [
     "activeTab",
     "contextMenus",

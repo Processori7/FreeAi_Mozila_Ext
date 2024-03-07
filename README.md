@@ -3,7 +3,8 @@ This is an extension that allows you to conveniently use free AI services.
 
 # Useing
 
-Download or clone the code. 
+Download here: https://addons.mozilla.org/addon/free-ai-services/
+or clone the code. 
 ```
 git clone https://github.com/Processori7/FreeAi_Mozila_Ext.git
 ```
@@ -17,7 +18,8 @@ Unfortunately, it will be deleted when I close the browser, so I plan to publish
 
 # Использование 
 
-Скачайте или клонируйте код. 
+Скачайте тут: https://addons.mozilla.org/addon/free-ai-services/
+или клонируйте код. 
 ```
 git clone https://github.com/Processori7/FreeAi_Mozila_Ext.git
 ```

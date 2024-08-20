@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", function () {
   // Open chat in new tab
   const openInNewTab = document.getElementById("openInNewTab");
   const searchInput = document.getElementById('searchInput');
-  const userLang = navigator.language || navigator.userLanguage; 
+  const userLang = browser.i18n.getUILanguage();
   const items = document.querySelectorAll('.aiMenu li'); // Получаем все элементы li из всех списков
   const favoriteCheckbox =  document.getElementById("favoriteCheckbox");
 
@@ -155,8 +155,6 @@ favoriteCheckbox.addEventListener('click', function() {
     var popup = document.createElement('div');
     popup.classList.add('popup');
 
-    // Определяем язык браузера
-    var userLang = browser.i18n.getUILanguage();
     var descriptions = (userLang.startsWith('ru')) ? websiteDescriptionsRu : websiteDescriptionsEn;
 
     aiMenuItems.forEach(function(item) {

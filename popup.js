@@ -11,35 +11,45 @@ document.addEventListener("DOMContentLoaded", function () {
  
   let originalOrder = []; // Массив для хранения исходного порядка элементов
 
-// Сохраняем исходный порядок элементов при загрузке страницы
-function saveOriginalOrder() {
-    const itemsArray = Array.from(items);
-    originalOrder = itemsArray.map(item => item.getAttribute('data-website'));
+  function setCookie(name, value, days) {
+    const expires = new Date(Date.now() + days * 864e5).toUTCString();
+    document.cookie = name + '=' + encodeURIComponent(value) + '; expires=' + expires + '; path=/';
+}
+
+function getCookie(name) {
+    return document.cookie.split('; ').reduce((r, v) => {
+        const parts = v.split('=');
+        return parts[0] === name ? decodeURIComponent(parts[1]) : r;
+    }, '');
 }
 
 function saveFavorites() {
     const favorites = [];
     items.forEach(item => {
         const checkbox = item.querySelector('.favorite-checkbox');
-        if (favoriteCheckbox && checkbox.checked) {
+        if (checkbox && checkbox.checked) {
             favorites.push(item.getAttribute('data-website'));
         }
     });
-    localStorage.setItem('favorites', JSON.stringify(favorites));
+    const favoritesString = JSON.stringify(favorites);
+    localStorage.setItem('favorites', favoritesString);
+    setCookie('favorites', favoritesString, 3650); // Сохраняем куки на 10 лет
 }
 
 function loadFavorites() {
-    const favoritesData = localStorage.getItem('favorites');
-    if (favoritesData) {
-        const favorites = JSON.parse(favoritesData);
-        favorites.forEach(website => {
-            const item = document.querySelector(`[data-website="${website}"]`);
-            if (item) {
-                item.classList.add('favorite');
-                item.parentNode.prepend(item);
+    const favoritesFromLocalStorage = JSON.parse(localStorage.getItem('favorites')) || [];
+    const favoritesFromCookies = JSON.parse(getCookie('favorites')) || [];
+    const favorites = [...new Set([...favoritesFromLocalStorage, ...favoritesFromCookies])]; // Объединяем и удаляем дубликаты
+
+    favorites.forEach(website => {
+        const item = Array.from(items).find(item => item.getAttribute('data-website') === website);
+        if (item) {
+            const checkbox = item.querySelector('.favorite-checkbox');
+            if (checkbox) {
+                checkbox.checked = true; // Устанавливаем чекбокс в состояние "выбран"
             }
-        });
-    }
+        }
+    });
 }
 
 favoriteCheckbox.addEventListener('click', function() {

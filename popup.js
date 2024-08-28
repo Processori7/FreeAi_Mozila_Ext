@@ -134,7 +134,6 @@ favoriteCheckbox.addEventListener('click', function() {
   listItems.forEach((li) => {
     li.addEventListener("click", function () {
     let website = this.getAttribute("data-website");
-    currentWebsite =  website;
     if (openInNewTab.checked) {
     browser.tabs.create({url: website});
  } else {

@@ -5,11 +5,48 @@ document.addEventListener("DOMContentLoaded", function () {
   const userLang = browser.i18n.getUILanguage();
   const items = document.querySelectorAll('.aiMenu li'); // Получаем все элементы li из всех списков
   const favoriteCheckbox =  document.getElementById("favoriteCheckbox");
-
+  const openOnRightClick = document.getElementById("openOnRightClick");
+  const copyOnRightClick = document.getElementById("copyOnRightClick");
   // Флаг для отслеживания, добавлены ли чекбоксы
   let checkboxesAdded = false;
  
   let originalOrder = []; // Массив для хранения исходного порядка элементов
+
+  // Загрузка состояния чекбоксов из localStorage
+  openOnRightClick.checked = JSON.parse(localStorage.getItem("openOnRightClick")) || false;
+  copyOnRightClick.checked = JSON.parse(localStorage.getItem("copyOnRightClick")) || false;
+
+  // Сохранение состояния чекбоксов
+  function updateOpenOnRightClickState() {
+      localStorage.setItem("openOnRightClick", openOnRightClick.checked);
+  }
+  openOnRightClick.addEventListener("change", updateOpenOnRightClickState);
+
+  function updateCopyOnRightClickState() {
+      localStorage.setItem("copyOnRightClick", copyOnRightClick.checked);
+  }
+  copyOnRightClick.addEventListener("change", updateCopyOnRightClickState);
+
+  // Обработчик правого клика на элементах списка
+  items.forEach(item => {
+      item.addEventListener("contextmenu", function (event) {
+          event.preventDefault(); // Отменяем стандартное меню
+
+          const website = item.getAttribute('data-website');
+
+          if (openOnRightClick.checked) {
+              window.open(website, '_blank'); // Открываем сайт в новой вкладке
+          }
+
+          if (copyOnRightClick.checked && !openOnRightClick.checked) {
+              navigator.clipboard.writeText(website).then(() => {
+                  //alert("Ссылка скопирована в буфер обмена!"); // Уведомление о копировании
+              }).catch(err => {
+                  //console.error("Ошибка при копировании ссылки: ", err);
+              });
+          }
+      });
+  });
 
   // Сохраняем исходный порядок элементов при загрузке страницы
 function saveOriginalOrder() {
@@ -106,36 +143,38 @@ function translateText(text) {
     return cleanAndTrimData(translatedText);
 }
 
-  if (userLang.startsWith('ru')) {
-      openInNewTab.nextSibling.textContent = 'Открывать сайты в новой вкладке.';
-      searchInput.placeholder = 'Поиск...';
-      favoriteCheckbox.nextSibling.textContent = 'Добавить в избранное';
-      const aiChat = document.getElementById("aiChat");
-      aiChat.innerText = "Бесплатный чат с ИИ";
-      const aiScripts = document.getElementById("aiScripts");
-      aiScripts.innerText="Бесплатные GPT скрипты помощники для поисковых систем";
-      const aiPC = document.getElementById("aiPC");
-      aiPC.innerText="Бесплатный GPT на ПК с Windows";
-      const aiArticle = document.getElementById("aiArticle");
-      aiArticle.innerText="Бесплатный генератор статей";
-      const aiImage = document.getElementById("aiImage");
-      aiImage.innerText="Бесплатные сервисы для работы с изображениями";
-      const aiVideo = document.getElementById("aiVideo");
-      aiVideo.innerText="Бесплатные сервисы для работы с видео";
-      const aiPresentation = document.getElementById("aiPresentation");
-      aiPresentation.innerText="Бесплатные сервисы для генерации презентаций";
-      const aiSound = document.getElementById("aiSound");
-      aiSound.innerText="Бесплатные сервисы для работы со звуком";
-      const aiTODO = document.getElementById("aiTODO");
-      aiTODO.innerText="Бесплатные сервисы для планирования";
-      const aiOther = document.getElementById("aiOther");
-      aiOther.innerText="Другие бесплатные сервисы с ИИ";
-      const scrollToElement = document.getElementById("scrollToElement");
-      scrollToElement.nextSibling.textContent="Прокручивать к последнему выбранному элементу";
-  }
-  else
-  {
-    // Переводим все элементы
+if (userLang.startsWith('ru')) {
+    openInNewTab.nextSibling.textContent = 'Открывать сайты в новой вкладке.';
+    searchInput.placeholder = 'Поиск...';
+    favoriteCheckbox.nextSibling.textContent = 'Добавить в избранное';
+    const aiChat = document.getElementById("aiChat");
+    aiChat.innerText = "Бесплатный чат с ИИ";
+    const aiScripts = document.getElementById("aiScripts");
+    aiScripts.innerText="Бесплатные GPT скрипты помощники для поисковых систем";
+    const aiPC = document.getElementById("aiPC");
+    aiPC.innerText="Бесплатный GPT на ПК с Windows";
+    const aiArticle = document.getElementById("aiArticle");
+    aiArticle.innerText="Бесплатный генератор статей";
+    const aiImage = document.getElementById("aiImage");
+    aiImage.innerText="Бесплатные сервисы для работы с изображениями";
+    const aiVideo = document.getElementById("aiVideo");
+    aiVideo.innerText="Бесплатные сервисы для работы с видео";
+    const aiPresentation = document.getElementById("aiPresentation");
+    aiPresentation.innerText="Бесплатные сервисы для генерации презентаций";
+    const aiSound = document.getElementById("aiSound");
+    aiSound.innerText="Бесплатные сервисы для работы со звуком";
+    const aiTODO = document.getElementById("aiTODO");
+    aiTODO.innerText="Бесплатные сервисы для планирования";
+    const aiOther = document.getElementById("aiOther");
+    aiOther.innerText="Другие бесплатные сервисы с ИИ";
+    const scrollToElement = document.getElementById("scrollToElement");
+    scrollToElement.nextSibling.textContent="Прокручивать к последнему выбранному элементу";
+    openOnRightClick.nextSibling.textContent="Открывать сайт в новой вкладке при нажатии правой кнопкой мыши";
+    copyOnRightClick.nextSibling.textContent="Копировать ссылку при нажатии правой кнопкой мыши";
+}
+else
+{
+  // Переводим все элементы
 openInNewTab.nextSibling.textContent = translateText("Открывать сайты в новой вкладке.");
 searchInput.placeholder = translateText('Поиск...');
 favoriteCheckbox.nextSibling.textContent = translateText('Добавить в избранное');
@@ -161,6 +200,8 @@ const aiOther = document.getElementById("aiOther");
 aiOther.innerText = translateText("Другие бесплатные сервисы с ИИ");
 const scrollToElement = document.getElementById("scrollToElement");
 scrollToElement.nextSibling.textContent = translateText("Прокручивать к последнему выбранному элементу");
+openOnRightClick.nextSibling.textContent=translateText("Открывать сайт в новой вкладке при нажатии правой кнопкой мыши");
+copyOnRightClick.nextSibling.textContent=translateText("Копировать ссылку при нажатии правой кнопкой мыши");
   }
 
   openInNewTab.checked = JSON.parse(localStorage.getItem("openInNewTab")) || false;
@@ -448,7 +489,15 @@ var websiteDescriptionsRu = {
     "https://www.freepik.com/pikaso":"Генератор эскизов для изображений с ИИ, который превращает ваши рисунки и идеи в жизнь в режиме реального времени",
     "https://yce.perfectcorp.com/colorize":"Сервис раскрасит любое фото, цвета получаются натуральными и насыщенными, войдите используя почту, чтобы скачать фото без вотерки",
     "https://www.figma.com/community/plugin/1326990370920029683/figma-to-replit":"Плагин конвертирует ваши дизайны сразу в приложения на HTML, CSS или React, при этом финальный результат вам не составит труда экспортировать, запустить или подредактировать код.",
-    "https://tinywow.com/tools/write":"Это огромнейшая база ИИ для работы с текстом, доступно множество возможностей от генерации текста до проверки текста на наличия различных ошибок"
+    "https://tinywow.com/tools/write":"Это огромнейшая база ИИ для работы с текстом, доступно множество возможностей от генерации текста до проверки текста на наличия различных ошибок",
+    "https://imagecolorizer.com/":"Это бесплатный онлайн-инструмент на основе ИИ, который может автоматически раскрашивать и восстанавливать старые черно-белые фотографии",
+    "https://melody.ml/":"Сервис позволяет легко разделить аудиодорожки с помощью машинного обучения бесплатно, при этом автоматически изолируйте вокал и генерируйте стебы для ремиксов песен",
+    "https://venice.ai/chat":"Сервис с бесплатный планом, который позволяет общаться с раличными LLM на любые темы",
+    "https://deepai.org/chat":"Сервис с бесплатный планом, который позволяет общаться с раличными LLM на любые темы",
+    "https://lmarena.ai/":"Сервис бесплатно позволяет общаться с раличными LLM на любые темы и оценивать их эффективность",
+    "https://studyable.app/":"Сервис с бесплатным планом, который поможет справиться с любым домашним заданием",
+    "https://huggingface.co/chat/":"Сервис позволяет общаться с различными LLM",
+    "https://app.giz.ai/assistant?mode=chat":"Сервис позволяет общаться с различными LLM",
 };
     
     initializePopup();

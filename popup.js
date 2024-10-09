@@ -41,9 +41,7 @@ document.addEventListener("DOMContentLoaded", function () {
           if (copyOnRightClick.checked && !openOnRightClick.checked) {
               navigator.clipboard.writeText(website).then(() => {
                   //alert("Ссылка скопирована в буфер обмена!"); // Уведомление о копировании
-              }).catch(err => {
-                  //console.error("Ошибка при копировании ссылки: ", err);
-              });
+              })
           }
       });
   });

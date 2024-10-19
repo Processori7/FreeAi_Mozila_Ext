@@ -496,6 +496,14 @@ var websiteDescriptionsRu = {
     "https://studyable.app/":"Сервис с бесплатным планом, который поможет справиться с любым домашним заданием",
     "https://huggingface.co/chat/":"Сервис позволяет общаться с различными LLM",
     "https://app.giz.ai/assistant?mode=chat":"Сервис позволяет общаться с различными LLM",
+    "https://app.myshell.ai/explore":"Платформа предлагает бесплатный доступ к передовым языковым моделям, включая GPT-4 и другие ведущие LLM, что позволяет пользователям создавать высокоспособных и привлекательных ботов",
+    "https://huggingface.co/spaces/OzzyGT/diffusers-image-fill":"Сервис, который поможет убрать лишнее с фотографии",
+    "https://huggingface.co/spaces/TheEeeeLin/HivisionIDPhotos":"Сервис, который позволяет быстро сделать фото на документы",
+    "https://huggingface.co/spaces/fffiloni/expression-editor":"Нейросеть для управления эмоциями на фото в реальном времени",
+    "https://www.transvribe.com/":"Бесплатный инструмент ИИ, который позволяет быстро получать ответы на любые видео на YouTube",
+    "https://aisaver.io/face-swap-video":"Бесплатный инструмент для изменения лица на видео, необходима регистрация или вход в аккаунт",
+    "https://modulbot.ru/text-generator":"Бесплатный генератор текстов",
+    "https://minitoolai.com/":"Сервис, который предоставляет доступ к нескольким полезным сервисам с ИИ в том числе и GPT-4o"
 };
     
     initializePopup();

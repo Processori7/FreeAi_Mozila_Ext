@@ -4,17 +4,81 @@ document.addEventListener("DOMContentLoaded", function () {
   const searchInput = document.getElementById('searchInput');
   const userLang = browser.i18n.getUILanguage();
   const items = document.querySelectorAll('.aiMenu li'); // Получаем все элементы li из всех списков
+  const headerMenuToggle = document.getElementById("header-menu-toggle");
+  const headerDropdownMenu = document.getElementById("header-dropdown-menu");
+  const h1items = document.querySelectorAll('h1');
   const favoriteCheckbox =  document.getElementById("favoriteCheckbox");
   const openOnRightClick = document.getElementById("openOnRightClick");
   const copyOnRightClick = document.getElementById("copyOnRightClick");
   // Флаг для отслеживания, добавлены ли чекбоксы
   let checkboxesAdded = false;
- 
+  let translateUrl = "";
+  let translatedText = "";
   let originalOrder = []; // Массив для хранения исходного порядка элементов
 
   // Загрузка состояния чекбоксов из localStorage
   openOnRightClick.checked = JSON.parse(localStorage.getItem("openOnRightClick")) || false;
   copyOnRightClick.checked = JSON.parse(localStorage.getItem("copyOnRightClick")) || false;
+
+   // Создаем элементы меню для каждого заголовка
+   h1items.forEach(h1 => {
+    const menuItem = document.createElement('div');
+    if (!userLang.startsWith('ru'))
+        {
+            menuItem.textContent = translateText(h1.textContent, "en"); // Текст заголовка
+        }
+        else
+        {
+            if(h1.textContent =="Free AI Chat"){menuItem.textContent="Бесплатный чат с ИИ"}
+            else if(h1.textContent =="Free GPT scripts for search engines"){menuItem.textContent="Бесплатные GPT скрипты помощники для поисковых систем"}
+            else if(h1.textContent =="Free GPT on Windows PC"){menuItem.textContent="Бесплатный GPT на ПК с Windows"}
+            else if(h1.textContent =="Free AI Article Generators"){menuItem.textContent="Бесплатные генераторы статей с ИИ"}
+            else if(h1.textContent =="Free AI Image Services"){menuItem.textContent="Бесплатные сервисы для работы с изображениями"}
+            else if(h1.textContent =="Free AI Video Services"){menuItem.textContent="Бесплатные сервисы для работы с видео"}
+            else if(h1.textContent =="Free AI Presentation Generators"){menuItem.textContent="Бесплатные сервисы для генерации презентаций"}
+            else if(h1.textContent =="Free AI sound services"){menuItem.textContent="Бесплатные сервисы для работы со звуком"}
+            else if(h1.textContent =="Free AI TODO Services"){menuItem.textContent="Бесплатные сервисы для планирования"}
+            else if(h1.textContent =="Other AI Services"){menuItem.textContent="Другие бесплатные сервисы с ИИ"}
+        }
+        menuItem.classList.add('header-dropdown-item'); // Добавляем класс для стилей
+        menuItem.addEventListener('click', function () {
+        smoothScroll(h1, 1000); // Прокручиваем к заголовку
+        headerDropdownMenu.style.display = 'none'; // Закрываем меню после клика
+    });
+    headerDropdownMenu.appendChild(menuItem);
+});
+
+// Обработчик клика для открытия/закрытия меню
+headerMenuToggle.addEventListener("click", function () {
+    headerDropdownMenu.style.display = headerDropdownMenu.style.display === "block" ? "none" : "block";
+});
+
+// Закрытие меню при клике вне его
+document.addEventListener("click", function (event) {
+    if (!headerMenuToggle.contains(event.target) && !headerDropdownMenu.contains(event.target)) {
+        headerDropdownMenu.style.display = "none";
+    }
+});
+
+function smoothScroll(target, duration) {
+    const start = window.scrollY;
+    const end = target.getBoundingClientRect().top + start;
+    const distance = end - start;
+    let startTime = null;
+
+    function animation(currentTime) {
+        if (startTime === null) startTime = currentTime;
+        const timeElapsed = currentTime - startTime;
+        const progress = Math.min(timeElapsed / duration, 1);
+        window.scrollTo(0, start + distance * progress);
+
+        if (timeElapsed < duration) {
+            requestAnimationFrame(animation);
+        }
+    }
+
+    requestAnimationFrame(animation);
+}
 
   // Сохранение состояния чекбоксов
   function updateOpenOnRightClickState() {
@@ -131,17 +195,14 @@ favoriteCheckbox.addEventListener('click', function() {
       });
   });
 
- let translateUrl = "";
-let translatedText = "";
-
 // Функция для перевода текста
-function translateText(text) {
-    translateUrl = "https://translate.googleapis.com/translate_a/single?format=text&client=gtx&sl=" + "ru" + "&tl=" + userLang + "&dt=t&q=" + encodeURIComponent(text);
+function translateText(text, lang) {
+    translateUrl = "https://translate.googleapis.com/translate_a/single?format=text&client=gtx&sl=" + lang + "&tl=" + userLang + "&dt=t&q=" + encodeURIComponent(text); //lang = "ru"
     translatedText = httpGet(translateUrl);
     return cleanAndTrimData(translatedText);
 }
 
-if (userLang.startsWith('ru')) {
+  if (userLang.startsWith('ru')) {
     openInNewTab.nextSibling.textContent = 'Открывать сайты в новой вкладке.';
     searchInput.placeholder = 'Поиск...';
     favoriteCheckbox.nextSibling.textContent = 'Добавить в избранное';
@@ -152,7 +213,7 @@ if (userLang.startsWith('ru')) {
     const aiPC = document.getElementById("aiPC");
     aiPC.innerText="Бесплатный GPT на ПК с Windows";
     const aiArticle = document.getElementById("aiArticle");
-    aiArticle.innerText="Бесплатный генератор статей";
+    aiArticle.innerText="Бесплатные генераторы статей с ИИ";
     const aiImage = document.getElementById("aiImage");
     aiImage.innerText="Бесплатные сервисы для работы с изображениями";
     const aiVideo = document.getElementById("aiVideo");
@@ -165,41 +226,37 @@ if (userLang.startsWith('ru')) {
     aiTODO.innerText="Бесплатные сервисы для планирования";
     const aiOther = document.getElementById("aiOther");
     aiOther.innerText="Другие бесплатные сервисы с ИИ";
-    const scrollToElement = document.getElementById("scrollToElement");
-    scrollToElement.nextSibling.textContent="Прокручивать к последнему выбранному элементу";
     openOnRightClick.nextSibling.textContent="Открывать сайт в новой вкладке при нажатии правой кнопкой мыши";
     copyOnRightClick.nextSibling.textContent="Копировать ссылку при нажатии правой кнопкой мыши";
-}
-else
-{
-  // Переводим все элементы
-openInNewTab.nextSibling.textContent = translateText("Открывать сайты в новой вкладке.");
-searchInput.placeholder = translateText('Поиск...');
-favoriteCheckbox.nextSibling.textContent = translateText('Добавить в избранное');
+  }
+  else
+  {
+    // Переводим все элементы
+openInNewTab.nextSibling.textContent = translateText("Открывать сайты в новой вкладке.", "ru");
+searchInput.placeholder = translateText('Поиск...', "ru");
+favoriteCheckbox.nextSibling.textContent = translateText('Добавить в избранное', "ru");
 const aiChat = document.getElementById("aiChat");
-aiChat.innerText = translateText("Бесплатный чат с ИИ");
+aiChat.innerText = translateText("Бесплатный чат с ИИ", "ru");
 const aiScripts = document.getElementById("aiScripts");
-aiScripts.innerText = translateText("Бесплатные GPT скрипты помощники для поисковых систем");
+aiScripts.innerText = translateText("Бесплатные GPT скрипты помощники для поисковых систем", "ru");
 const aiPC = document.getElementById("aiPC");
-aiPC.innerText = translateText("Бесплатный GPT на ПК с Windows");
+aiPC.innerText = translateText("Бесплатный GPT на ПК с Windows", "ru");
 const aiArticle = document.getElementById("aiArticle");
-aiArticle.innerText = translateText("Бесплатный генератор статей");
+aiArticle.innerText = translateText("Бесплатный генератор статей", "ru");
 const aiImage = document.getElementById("aiImage");
-aiImage.innerText = translateText("Бесплатные сервисы для работы с изображениями");
+aiImage.innerText = translateText("Бесплатные сервисы для работы с изображениями", "ru");
 const aiVideo = document.getElementById("aiVideo");
-aiVideo.innerText = translateText("Бесплатные сервисы для работы с видео");
+aiVideo.innerText = translateText("Бесплатные сервисы для работы с видео", "ru");
 const aiPresentation = document.getElementById("aiPresentation");
-aiPresentation.innerText = translateText("Бесплатные сервисы для генерации презентаций");
+aiPresentation.innerText = translateText("Бесплатные сервисы для генерации презентаций", "ru");
 const aiSound = document.getElementById("aiSound");
-aiSound.innerText = translateText("Бесплатные сервисы для работы со звуком");
+aiSound.innerText = translateText("Бесплатные сервисы для работы со звуком", "ru");
 const aiTODO = document.getElementById("aiTODO");
-aiTODO.innerText = translateText("Бесплатные сервисы для планирования");
+aiTODO.innerText = translateText("Бесплатные сервисы для планирования", "ru");
 const aiOther = document.getElementById("aiOther");
-aiOther.innerText = translateText("Другие бесплатные сервисы с ИИ");
-const scrollToElement = document.getElementById("scrollToElement");
-scrollToElement.nextSibling.textContent = translateText("Прокручивать к последнему выбранному элементу");
-openOnRightClick.nextSibling.textContent=translateText("Открывать сайт в новой вкладке при нажатии правой кнопкой мыши");
-copyOnRightClick.nextSibling.textContent=translateText("Копировать ссылку при нажатии правой кнопкой мыши");
+aiOther.innerText = translateText("Другие бесплатные сервисы с ИИ", "ru");
+openOnRightClick.nextSibling.textContent=translateText("Открывать сайт в новой вкладке при нажатии правой кнопкой мыши", "ru");
+copyOnRightClick.nextSibling.textContent=translateText("Копировать ссылку при нажатии правой кнопкой мыши", "ru");
   }
 
   openInNewTab.checked = JSON.parse(localStorage.getItem("openInNewTab")) || false;
@@ -503,7 +560,12 @@ var websiteDescriptionsRu = {
     "https://www.transvribe.com/":"Бесплатный инструмент ИИ, который позволяет быстро получать ответы на любые видео на YouTube",
     "https://aisaver.io/face-swap-video":"Бесплатный инструмент для изменения лица на видео, необходима регистрация или вход в аккаунт",
     "https://modulbot.ru/text-generator":"Бесплатный генератор текстов",
-    "https://minitoolai.com/":"Сервис, который предоставляет доступ к нескольким полезным сервисам с ИИ в том числе и GPT-4o"
+    "https://minitoolai.com/":"Сервис, который предоставляет доступ к нескольким полезным сервисам с ИИ в том числе и GPT-4o",
+    "https://komo.ai/":"Бесплатная поисковая система с ИИ, имеет дополнительные платные функции",
+    "https://heybro.ai/web":"Бесплатный доступ к GPT-4o-mini",
+    "https://kingnish-opengpt-4o.hf.space/?__theme=dark":"Сервис позволяет общаться с GPT-4o, генерировать видео и картинки",
+    "https://finechat.ai/ru/app":"Сервис позволяет использовать GPT-4o и GPT-4o-mini",
+    "https://pythonspath.ru/gpt4o":"Сервис позволяет использовать GPT-4o"
 };
     
     initializePopup();

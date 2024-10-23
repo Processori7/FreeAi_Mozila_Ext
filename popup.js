@@ -564,7 +564,6 @@ var websiteDescriptionsRu = {
     "https://komo.ai/":"Бесплатная поисковая система с ИИ, имеет дополнительные платные функции",
     "https://heybro.ai/web":"Бесплатный доступ к GPT-4o-mini",
     "https://kingnish-opengpt-4o.hf.space/?__theme=dark":"Сервис позволяет общаться с GPT-4o, генерировать видео и картинки",
-    "https://finechat.ai/ru/app":"Сервис позволяет использовать GPT-4o и GPT-4o-mini",
     "https://pythonspath.ru/gpt4o":"Сервис позволяет использовать GPT-4o"
 };
     

@@ -564,7 +564,10 @@ var websiteDescriptionsRu = {
     "https://komo.ai/":"Бесплатная поисковая система с ИИ, имеет дополнительные платные функции",
     "https://heybro.ai/web":"Бесплатный доступ к GPT-4o-mini",
     "https://kingnish-opengpt-4o.hf.space/?__theme=dark":"Сервис позволяет общаться с GPT-4o, генерировать видео и картинки",
-    "https://pythonspath.ru/gpt4o":"Сервис позволяет использовать GPT-4o"
+    "https://pythonspath.ru/gpt4o":"Сервис позволяет использовать GPT-4o",
+    "https://huggingface.co/spaces/kayfahaarukku/fufufafa-makan-brem":"Бесплатный генератор изображений высокого качества",
+    "https://www.genmo.ai/play":"Бесплатный генератор видео, нобходима авторизация",
+    "https://giga.chat/":"Бесплатный ИИ чат из России"
 };
     
     initializePopup();

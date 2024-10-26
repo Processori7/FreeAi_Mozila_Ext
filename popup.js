@@ -16,10 +16,20 @@ document.addEventListener("DOMContentLoaded", function () {
   let translatedText = "";
   let originalOrder = []; // Массив для хранения исходного порядка элементов
 
-  // Загрузка состояния чекбоксов из localStorage
-  openOnRightClick.checked = JSON.parse(localStorage.getItem("openOnRightClick")) || false;
-  copyOnRightClick.checked = JSON.parse(localStorage.getItem("copyOnRightClick")) || false;
 
+    // Загрузка сохраненных значений
+    openOnRightClick.checked = localStorage.getItem("openOnRightClick") === "true";
+    copyOnRightClick.checked = localStorage.getItem("copyOnRightClick") === "true";
+     // Сохранение состояния чекбоксов
+    function updateOpenOnRightClickState() {
+    localStorage.setItem("openOnRightClick", openOnRightClick.checked);
+    }
+    openOnRightClick.addEventListener("change", updateOpenOnRightClickState);
+
+    function updateCopyOnRightClickState() {
+        localStorage.setItem("copyOnRightClick", copyOnRightClick.checked);
+    }
+copyOnRightClick.addEventListener("change", updateCopyOnRightClickState);
    // Создаем элементы меню для каждого заголовка
    h1items.forEach(h1 => {
     const menuItem = document.createElement('div');
@@ -79,17 +89,6 @@ function smoothScroll(target, duration) {
 
     requestAnimationFrame(animation);
 }
-
-  // Сохранение состояния чекбоксов
-  function updateOpenOnRightClickState() {
-      localStorage.setItem("openOnRightClick", openOnRightClick.checked);
-  }
-  openOnRightClick.addEventListener("change", updateOpenOnRightClickState);
-
-  function updateCopyOnRightClickState() {
-      localStorage.setItem("copyOnRightClick", copyOnRightClick.checked);
-  }
-  copyOnRightClick.addEventListener("change", updateCopyOnRightClickState);
 
   // Обработчик правого клика на элементах списка
   items.forEach(item => {

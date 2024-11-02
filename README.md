@@ -21,7 +21,7 @@ Unfortunately, it will be deleted when I close the browser, so I plan to publish
     After that, the new version will be installed automatically.
 2. If the extension was downloaded from GitHub:
 If you are using Git, go to the directory with the extension and run:
-``
+```
 git pull
 ```
 Or download the archive and copy the replacement files.

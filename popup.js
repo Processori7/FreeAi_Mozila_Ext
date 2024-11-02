@@ -15,8 +15,45 @@ document.addEventListener("DOMContentLoaded", function () {
   let translateUrl = "";
   let translatedText = "";
   let originalOrder = []; // Массив для хранения исходного порядка элементов
+  let updateText = "Доступно обновление! Пожалуйста, нажмите на кнопку настроек и выбирите первый пункт."
 
+  // Функция для проверки обновлений
+async function checkForUpdates() {
+    const repoUrl = "https://api.github.com/repos/Processori7/FreeAi_Mozila_Ext/contents/manifest.json";
+    
+    // Получаем локальную версию из manifest.json расширения
+    //const localVersion = "16.6.27"; // Для тестирования
+    const localVersion = browser.runtime.getManifest().version;
+    const updateMessageElement = document.getElementById('update-message');
+    
+    try {
+        const response = await fetch(repoUrl);
+        const data = await response.json();
+        
+        // Декодируем содержимое файла manifest.json
+        const manifestContent = JSON.parse(atob(data.content));
+        const remoteVersion = manifestContent.version; // Извлекаем версию из полученного манифеста
 
+        // Сравниваем локальную версию с удаленной версией
+        if (localVersion !== remoteVersion) {
+            // Если версии не совпадают, показываем сообщение
+            if (userLang.startsWith('ru')) {
+                updateMessageElement.textContent = updateText;
+            } else {
+                updateMessageElement.textContent = translateText(updateText, "ru");
+            }
+            updateMessageElement.style.display = 'block';
+
+            // Добавляем обработчик клика на сообщение
+            updateMessageElement.onclick = function() {
+                window.open("https://github.com/Processori7/FreeAi_Mozila_Ext", "_blank");
+                updateMessageElement.style.display = 'none'; // Скрываем сообщение после клика
+            };
+        }
+    } catch (error) {
+        console.error("Ошибка при проверке обновлений:", error);
+    }
+}
     // Загрузка сохраненных значений
     openOnRightClick.checked = localStorage.getItem("openOnRightClick") === "true";
     copyOnRightClick.checked = localStorage.getItem("copyOnRightClick") === "true";
@@ -569,9 +606,16 @@ var websiteDescriptionsRu = {
     "https://storm.genie.stanford.edu/":"ИИ для исследователей, которая способна писать качественные работы, требуется вход в систему",
     "https://tools.rotato.app/compress":"Бесплатный сервис, который позволяет сжимать видео без видимой потери качества",
     "https://mokker.ai/":"Инструмент для генерации фотографий на основе искусственного интеллекта, требуется регистрация, лимит бесплатно плана: 40 картинок",
-    "https://hix.ai/ru/search":"Бесплатная поисковая система с ИИ и подробными ответами на вопросы, включая генерацию перезентаций и ментальную карту"
+    "https://mokker.ai/":"Инструмент для генерации фотографий на основе искусственного интеллекта, требуется регистрация, лимит бесплатно плана: 40 картинок",
+    "https://hix.ai/ru/search":"Бесплатная поисковая система с ИИ и подробными ответами на вопросы, включая генерацию перезентаций и ментальную карту",
+    "https://llmarena.ru/":"LLM арена, досутупно множество моделей, сайт имеет тёмную тему оформления",
+    "https://claudeson.net/":"Позволяет бесплатно использовать Claude 3.5 Sonnet",
+    "https://claude3.free2gpt.xyz/":"Позволяет бесплатно использовать Claude 3.5 Sonnet",
+    "https://copilot.getbind.co/":"Бесплатная поисковая система с ИИ, позволяет использовать GPT-4o mini",
+    "https://flowith.io/":"Инструмент повышения производительности на основе искусственного интеллекта, предназначенный для глубокой работы",
+    "https://llmchat.in/":"Бесплатный чат с большим выбором LLM"
 };
-    
+    checkForUpdates()
     initializePopup();
     saveOriginalOrder()
     loadFavorites()

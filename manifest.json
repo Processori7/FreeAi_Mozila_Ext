@@ -5,7 +5,7 @@
   },
   "manifest_version": 2,
   "name": "Free Ai Services",
-  "version": "16.6.29",
+  "version": "16.6.30",
   "permissions": [
     "activeTab",
     "contextMenus",

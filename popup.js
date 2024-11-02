@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", function () {
   let translateUrl = "";
   let translatedText = "";
   let originalOrder = []; // Массив для хранения исходного порядка элементов
-  let updateText = "Доступно обновление! Пожалуйста, нажмите на кнопку настроек и выбирите первый пункт."
+  let updateText = "Доступно обновление!"
 
   // Функция для проверки обновлений
 async function checkForUpdates() {

@@ -90,7 +90,6 @@ body {
     left: 50%; 
     transform: translateX(-50%); 
     text-align: center;
-    z-index: -5;
     display: flex; /* Добавлено */
     flex-direction: column; /* Добавлено, если нужно вертикальное выравнивание */
     align-items: center; /* Добавлено для горизонтального выравнивания */

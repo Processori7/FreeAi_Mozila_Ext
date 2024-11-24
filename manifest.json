@@ -9,16 +9,21 @@
   "permissions": [
     "activeTab",
     "contextMenus",
-    "storage"
+    "storage",
+    "sidebar"
   ],
   "browser_action": {
     "default_icon": "icon.png",
-    "default_popup": "popup.html"
+    "default_title": "Open Free AI Services Sidebar"
   },
   "sidebar_action": {
     "default_title": "Free Ai Services",
     "default_panel": "popup.html",
     "default_icon": "icon.png",
+    "open_at_install": true,
     "browser_style": false
+  },
+  "background": {
+    "scripts": ["background.js"]
   }
 }

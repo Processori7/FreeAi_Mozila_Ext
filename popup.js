@@ -832,7 +832,6 @@ listItems.forEach((li) => {
       const menuLabel = document.querySelector('.menu-label');
       const dropdownMenu = document.getElementById('dropdown-menu');
       const dropdownItems = document.querySelectorAll('.dropdown-item');
-      const menuToggle = document.querySelector('.menu-toggle');
       const searchInput = document.getElementById('searchInput');
   
       // Применяем стили к выпадающему меню настроек

@@ -5,23 +5,21 @@
   },
   "manifest_version": 2,
   "name": "Free Ai Services",
-  "version": "16.6.35",
+  "version": "16.6.36",
   "permissions": [
     "activeTab",
     "contextMenus",
-    "storage",
-    "sidebar"
+    "storage"
   ],
   "browser_action": {
     "default_icon": "icon.png",
-    "default_title": "Open Free AI Services Sidebar"
+    "default_title": "Open Free AI Services",
+    "default_popup": "popup.html"
   },
   "sidebar_action": {
-    "default_title": "Free Ai Services",
-    "default_panel": "popup.html",
-    "default_icon": "icon.png",
-    "open_at_install": true,
-    "browser_style": false
+    "default_icon": "icon-32.png",
+    "default_title": "Free AI Sidebar",
+    "default_panel": "popup.html"
   },
   "background": {
     "scripts": ["background.js"]

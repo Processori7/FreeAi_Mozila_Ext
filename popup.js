@@ -857,7 +857,19 @@ listItems.forEach((li) => {
       "https://www.hotbot.com/chat":"Бесплатный сервис для общения с ИИ",
       "https://free-ai-chat.com/en/model/o1-mini":"Бесплатный сервис для общения с различными LLM",
       "https://suno.com/me":"Бесплатный сервис для генерации музыки",
-      "https://huggingface.co/spaces/MoonQiu/FreeScale":"Бесплатный сервис для генерации изображений"
+      "https://huggingface.co/spaces/MoonQiu/FreeScale":"Бесплатный сервис для генерации изображений",
+      "https://doodad.dev/pattern-generator/":"Сервис генерирует паттерны с уникальным дизайном, которые можно использовать в любом коммерческом проекте.",
+      "https://cobalt.tools/":"Сервис позволяет скачивать любое видео с любого сайта",
+      "https://huggingface.co/spaces/artificialguybr/video-dubbing":"Нейросеть может полностью переводить видеоролики и фильмы, сохраняя подлинные голоса (при необходимости редактируя отдельные фрагменты)",
+      "https://www.clipfly.ai/":"Бесплатный видеогенератор с искусственным интеллектом и платформа для создания, идеально подходящая для пользователей, не имеющих предыдущего опыта работы с видео",
+      "https://huggingface.co/spaces/lllyasviel/iclight-v2-vary":"ИИ для замены фона и освещения на фото",
+      "https://sourcegraph.com/cody/chat":"Бесплатный сервис для общения с ИИ, 200 запросов в месяц, требуется регистрация",
+      "https://snapedit.app/ru/remove-object/upload":"Бесплтаный сервис для редактирования изображений и удаления лишних объектов",
+      "https://huggingface.co/spaces/franciszzj/Leffa":"ИИ-примерочная — бесплатная и с максимально понятным интерфейсом",
+      "https://huggingface.co/spaces/TencentARC/InstantMesh":"Бесплатная нейросеть от Tencent, которая превращает изображение в 3D-объект",
+      "https://oo.ai/":"Бесплатная поисковая система с ИИ",
+      "https://www.drawdb.app/editor":"Это надёжный и удобный редактор связей между объектами базы данных (DBER) прямо в вашем браузере",
+      "https://dictation.io/":"инструмент распознавания речи для Google Chrome, который транскрибрует ваши произнесенные слова на другой язык в режиме реального времени"
   };
   
   function applyTheme(backgroundColor, textColor, liColor, liTextColor) {

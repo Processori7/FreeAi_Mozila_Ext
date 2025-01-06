@@ -71,6 +71,7 @@ document.addEventListener("DOMContentLoaded", function () {
     santa.style.left = x - 100 + "px";
     santa.style.top = y - 100 + "px";
   };
+
   document.addEventListener("mousemove", (e) => {
     move(e);
   });
@@ -90,6 +91,8 @@ document.addEventListener("DOMContentLoaded", function () {
         treecont.style.display= "block";
         snowcont.style.top="80px";
         localStorage.setItem("newYearTheme", "enabled");
+        // Включаем скрипт и стиль курсора
+        addCursorScriptAndStyle();
     } else {
         body.classList.remove("snow");
         body.classList.add("no-snow");
@@ -100,7 +103,39 @@ document.addEventListener("DOMContentLoaded", function () {
         snowcont.style.top="40px";
         treecont.style.display= "none";
         localStorage.setItem("newYearTheme", "disabled");
+        // Удаляем скрипт и стиль курсора
+        removeCursorScriptAndStyle();
     }
+}
+
+function addCursorScriptAndStyle() {
+    const script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.src = './snowcursor.js';
+    document.head.appendChild(script);
+
+    const style = document.createElement('style');
+    style.type = 'text/css';
+    style.innerHTML = 'body, a,button,input,label,div:hover {cursor: url(https://uguide.su/new_year/11/snowcurser.cur), url(https://uguide.su/new_year/11/snowcurser.png), auto !important;}';
+    document.head.appendChild(style);
+}
+
+function removeCursorScriptAndStyle() {
+  // Удаляем скрипт
+  const scripts = document.querySelectorAll('script[src="./snowcursor.js"]');
+  scripts.forEach(script => script.remove());
+
+  // Удаляем стиль
+  const styles = document.querySelectorAll('style');
+  styles.forEach(style => {
+      if (style.innerHTML.includes('cursor: url(https://uguide.su/new_year/11/snowcurser.cur)')) {
+          style.remove();
+      }
+  });
+
+  // Удаляем все блоки div с классом snowcursor
+  const divs = document.querySelectorAll('div.snowcursor');
+  divs.forEach(div => div.remove());
 }
 
 // Проверяем состояние чекбокса при загрузке страницы
@@ -869,7 +904,12 @@ listItems.forEach((li) => {
       "https://huggingface.co/spaces/TencentARC/InstantMesh":"Бесплатная нейросеть от Tencent, которая превращает изображение в 3D-объект",
       "https://oo.ai/":"Бесплатная поисковая система с ИИ",
       "https://www.drawdb.app/editor":"Это надёжный и удобный редактор связей между объектами базы данных (DBER) прямо в вашем браузере",
-      "https://dictation.io/":"инструмент распознавания речи для Google Chrome, который транскрибрует ваши произнесенные слова на другой язык в режиме реального времени"
+      "https://dictation.io/":"инструмент распознавания речи для Google Chrome, который транскрибрует ваши произнесенные слова на другой язык в режиме реального времени",
+      "https://www.fillout.com/ai-survey-maker":"Бесплатный инструмент, который позволяет быстро и легко создавать профессиональные опросы с помощью искусственного интеллекта",
+      "https://www.warp.dev/warp-ai":"Терминал для разработчиков, который теперь интегрирует ИИ для отладки, поиска команд и решения проблем",
+      "https://x-doc.ai/":"ИИ для перевода книг и документов на 108 языков, требуется регистрация",
+      "https://fokus.am":"Генератор презентаий с бесплатным планом, доступ можно получить только по ссылке, экспорт в PPTX не доступен",
+      "https://www.gptpanda.io/":"Помощник ChatGPT для Slack, основываясь на последних моделях OpenAI, GptPanda предлагает неограниченное количество запросов, а также имеет бесплатный стартовый план"
   };
   
   function applyTheme(backgroundColor, textColor, liColor, liTextColor) {

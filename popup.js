@@ -940,7 +940,11 @@ listItems.forEach((li) => {
       "https://photoeditor.ai/":"Набор инструментов для редактирования фотографий, которые могут легко удалять ненужные объекты, людей или текст из изображений, это позволяет вам хранить только то, что наиболее важно в ваших фотографиях",
       "https://www.promptengine.cc/":"Генератор промптов для ChatGPT и других ИИ",
       "https://www.deepfind.co/":"Поисковая система с ИИ",
-      "https://nomorecopyright.com/":"Сервис генерирует изображение, похожее на оригинал, но без авторских прав"
+      "https://nomorecopyright.com/":"Сервис генерирует изображение, похожее на оригинал, но без авторских прав",
+      "https://huggingface.co/spaces/deepseek-ai/deepseek-vl2-small":"Новая модель DeepSeek-VL2-small, распознающая объекты на изображениях и объясняющая их «смысл»",
+      "https://app.dreamlab.gg/":"Генерируем игры прямо в браузере",
+      "https://huggingface.co/spaces/Trudy/gemini-image-to-code":"Превращает изображения в интерактивные картинки",
+      "https://backgrounderase.net/home":"ИИ для удаления фона"
   };  
   
   function applyTheme(backgroundColor, textColor, liColor, liTextColor) {

@@ -944,7 +944,11 @@ listItems.forEach((li) => {
       "https://huggingface.co/spaces/deepseek-ai/deepseek-vl2-small":"Новая модель DeepSeek-VL2-small, распознающая объекты на изображениях и объясняющая их «смысл»",
       "https://app.dreamlab.gg/":"Генерируем игры прямо в браузере",
       "https://huggingface.co/spaces/Trudy/gemini-image-to-code":"Превращает изображения в интерактивные картинки",
-      "https://backgrounderase.net/home":"ИИ для удаления фона"
+      "https://backgrounderase.net/home":"ИИ для удаления фона",
+      "https://huggingface.co/spaces/webml-community/kokoro-webgpu":"ИИ для генерации аудио на основе текста или сценария",
+      "https://www.squarespace.com/logo/":"Генератор логотипов",
+      "https://chat.mathsolver.top/":"Бесплатное решение математических задач, которое предлагает персонализированный опыт репетиторства",
+      "https://chatgptgratis.eu/en/chat.html":"Сервис предоставляет бесплатный доступ к различным LLM"
   };  
   
   function applyTheme(backgroundColor, textColor, liColor, liTextColor) {

@@ -923,7 +923,7 @@ listItems.forEach((li) => {
       "https://www.whatmore.ai/studio":"Инструмент для создания видео на основе ИИ, предназначенный для брендов электронной коммерции для быстрого создания высококачественных маркетинговых видео, требуется регистрация",
       "https://huggingface.co/spaces/LGAI-EXAONE/EXAONE-3.5-7.8B-Instruct-Demo":"EXAONE 3.5: Набор инструктивных моделей от LG AI, это ссылка на универсальную 7.8B модель",
       "https://huggingface.co/spaces/webml-community/text-to-speech-webgpu":"Данный сервис позволяет переводить текст в речь",
-      "http://chat.qwenlm.ai/":"Сервис позволяет использовать 8 моделей QwenLM для общения, требуется авторизация",
+      "https://chat.qwenlm.ai/":"Сервис позволяет использовать 8 моделей QwenLM для общения, требуется авторизация",
       "https://t.me/gpt_lama_bot":"Бот в Телеграм, который позволяет общаться с несколькими моделями LLM, включая GPT4o",
       "https://consensus.app/":"Поисковая система на основе искусственного интеллекта, которая помогает вам найти основанные на фактических данных ответы на ваши исследовательские вопросы",
       "https://bexi.ai/":"Сервис предлагает два основных инструмента: AI Humanizer для преобразования текста, созданного ИИ, в естественный, похожий на человека язык, и AI Detector для обнаружения контента, созданного AI, с высокой точностью",
@@ -964,9 +964,28 @@ listItems.forEach((li) => {
       "https://app.invesst.ai/login":"ИИ-сервис для ИНВЕСТИЦИОННЫХ исследований — Invesst буквально «DeepResearch для инвестиций», объединяющий в себе мощь поиска с помощью ChatGPT и Perplexity",
       "https://neonpangolin.github.io/FilePhish/":"Сервис позволяет находить файлы на веб-сайтах по ключевым словам, а также БД и ПО",
       "https://www.yeschat.ai/features/grok-3":"Сервис предоставляет доступ к GROK 3 от xAI",
-      "https://www.rabbithole.chat/":"Поисковая система с ИИ, в день даётся 3 бесплатных запроса, но внутри них можно разветвлять бесконечно"
-  };  
-  
+      "https://www.rabbithole.chat/":"Поисковая система с ИИ, в день даётся 3 бесплатных запроса, но внутри них можно разветвлять бесконечно",
+      "https://wise-cat-groq.vercel.app/chat/ephemeral":"Бесплатный чат с ИИ",
+      "https://www.whatonearth.ai/":"Бесплатная поисковая система с ИИ",
+      "https://medisearch.io/":"Бесплатная поисковая система с ИИ, ориентированная на вопросы связанные со здоровьем",
+      "https://phind-ai.com/":"Бесплатная поисковая система с ИИ",
+      "https://usefind.ai/":"Бесплатная поисковая система с ИИ",
+      "https://alice.yandex.ru/chat/01953c1a-be79-4000-9e88-5177131e2739/":"ИИ чат от с Алисой от команды Яндекса",
+      "https://app.yourchat.ai/#/":"Сервис предоставляет доступ к ChatGPT и поиску с ИИ",
+      "https://chat100.ai/":"Бесплатный чат с различными моделями LLM с ограничением в 50 запросов в неделю"
+  };    
+
+  function countElements()
+  {
+     // Выбираем все элементы li на странице
+     const liElements = document.querySelectorAll("li");
+     // Получаем их количество
+     const count = liElements.length;
+     // Находим элемент, куда будем выводить результат
+     const liCountContainer = document.getElementById("liCount");
+     // Выводим результат
+     liCountContainer.textContent =  translateText("Количество бесплатных сервисов: ", userLang) + " " + count;
+  }
   function applyTheme(backgroundColor, textColor, liColor, liTextColor) {
     try {
       // Применяем основные цвета
@@ -993,13 +1012,13 @@ listItems.forEach((li) => {
       const headerDropdownItems = document.querySelectorAll('.header-dropdown-item');
       
       if (themeSettings) {
-        themeSettings.style.backgroundColor = backgroundColor;
+        themeSettings.style.backgroundColor = liColor;
         themeSettings.style.color = textColor;
       }
       
       headerDropdownItems.forEach(item => {
         if (item) {
-          item.style.backgroundColor = backgroundColor;
+          item.style.backgroundColor = liColor;
           item.style.color = textColor;
         }
       });
@@ -1016,49 +1035,49 @@ listItems.forEach((li) => {
   
       // Применяем стили к выпадающему меню настроек
       if (dropdownMenu) {
-        dropdownMenu.style.backgroundColor = backgroundColor;
+        dropdownMenu.style.backgroundColor = liColor;
         dropdownMenu.style.color = textColor;
       }
   
       // Применяем стили к элементам выпадающего меню
       dropdownItems.forEach(item => {
         if (item) {
-          item.style.backgroundColor = backgroundColor;
+          item.style.backgroundColor = liColor;
           item.style.color = textColor;
         }
       });
   
       // Стилизуем кнопку меню настроек
-      if (menuLabel) {
-        menuLabel.style.backgroundColor = liColor;
-        menuLabel.style.color = textColor;
-      }
-  
-      if (headerMenuToggle) {
-        headerMenuToggle.style.backgroundColor = liColor;
-        headerMenuToggle.style.color = textColor;
-      }
-      if (themeMenuToggle) {
-        themeMenuToggle.style.backgroundColor = liColor;
-        themeMenuToggle.style.color = textColor;
-      }
-      
-      if (headerDropdownMenu) {
-        headerDropdownMenu.style.backgroundColor = backgroundColor;
-        headerDropdownMenu.style.color = textColor;
-      }
-      
-      if (themeDropdownMenu) {
-        themeDropdownMenu.style.backgroundColor = backgroundColor;
-        themeDropdownMenu.style.color = textColor;
-      }
-  
-      // Применяем стили к поисковому полю
-      if (searchInput) {
-        searchInput.style.backgroundColor = backgroundColor;
-        searchInput.style.color = textColor;
-        searchInput.style.borderColor = liColor;
-      }
+    if (menuLabel) {
+      menuLabel.style.backgroundColor = liColor;
+      menuLabel.style.color = textColor;
+    }
+
+    if (headerMenuToggle) {
+      headerMenuToggle.style.backgroundColor = liColor;
+      headerMenuToggle.style.color = textColor;
+    }
+    if (themeMenuToggle) {
+      themeMenuToggle.style.backgroundColor = liColor;
+      themeMenuToggle.style.color = textColor;
+    }
+    
+    if (headerDropdownMenu) {
+      headerDropdownMenu.style.backgroundColor = backgroundColor;
+      headerDropdownMenu.style.color = textColor;
+    }
+    
+    if (themeDropdownMenu) {
+      themeDropdownMenu.style.backgroundColor = backgroundColor;
+      themeDropdownMenu.style.color = textColor;
+    }
+
+    // Применяем стили к поисковому полю
+    if (searchInput) {
+      searchInput.style.backgroundColor = liColor;
+      searchInput.style.color = textColor;
+      searchInput.style.borderColor = liColor;
+    }
   
       // Сохраняем текущую тему
       const currentTheme = {
@@ -1189,12 +1208,13 @@ listItems.forEach((li) => {
   
     // Проверяем обновления при загрузке страницы
     checkForUpdates();
-    loadTheme()
+    loadTheme();
     // Навешиваем обработчики
     initializeThemeListeners();
     initializePopup();
-    saveOriginalOrder()
-    loadFavorites()
+    saveOriginalOrder();
+    loadFavorites();
+    countElements();
     // Проверяем, существует ли элемент 'translatedDescriptions' в localStorage
   if (!userLang.startsWith('ru'))
     {

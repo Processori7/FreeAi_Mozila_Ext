@@ -157,7 +157,7 @@
       position: fixed;
       top: 50%;
       left: 50%;
-      transform: translate(-50%, -920%);
+      transform: translate(-50%, -800%);
       z-index: 1000;
       padding: 10px;
       box-sizing: border-box;

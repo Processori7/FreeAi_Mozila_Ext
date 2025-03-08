@@ -979,7 +979,17 @@ listItems.forEach((li) => {
       "https://freeaichatplayground.com/":"Сервис предоставляет бесплатный доступ к различным LLM",
       "https://www.chatplayground.ai/":"Сервис предоставляет доступ к множеству LLM, нужна регистрация, есть ограничения на количество запросов",
       "https://playground.ai.cloudflare.com/":"Сервис предоставляет бесплатный доступ к различным LLM",
-      "https://letmegpt.com/":"Сервис совмещеает ИИ с Google поиском"
+      "https://letmegpt.com/":"Сервис совмещеает ИИ с Google поиском",
+      "https://chat.akash.network/":"Сервис предоставляет доступ к различным LLM",
+      "https://www.sesame.com/research/crossing_the_uncanny_valley_of_voice#demo":"Голосовой чат-бот для практики английского языка",
+      "https://huggingface.co/spaces/ASLP-lab/DiffRhythm":"Аналог Suno для генерации музыки",
+      "https://playground.allenai.org":"Сервис предоставляет бесплатный доступ к различным LLM",
+      "https://heck.ai/":"Бесплатная поисковая система с ИИ, позволяет использовать несколько LLM бесплатно, ограничение - 50 запросов в день",
+      "https://chat.two.ai/":"Бесплатный чат с ИИ с возможностью поиска информации в Интернете",
+      "https://hix.ai/claude/claude-3-7-sonnet":"Сервис предоставляет доступ к Claude 3.7",
+      "https://chat.felo.ai/":"Felo чат, предоставляет доступ к различным LLM, требуется авторизация",
+      "https://playground.electronhub.top/":"Сервис предоставляет бесплатный доступ к различным LLM и моделям для генерации фото, видео и звука, требуется авторизация, есть лимит - 100000 токенов в день",
+      "https://grok.com/":"Grok Ai - бесплатный чат с ИИ, не доступен в некоторых странах, требуется авторизация"
   };    
 
   function countElements()

@@ -1001,8 +1001,14 @@ listItems.forEach((li) => {
       "https://explorer.globe.engineer/":"Это визуальная поисковая система, которая помогает легко изучать новые темы и исследовать их с помощью наглядных материалов и изображений",
       "https://www.openai.fm/":"Модель text2speech от OpenAi — голоса для озвучки можно сделать промтом или выбрать готовый",
       "https://uncovr.app/":"Сервис предоставляет доступ к различным LLM",
-      "https://chatgpt-clone-ten-nu.vercel.app":"Сервис предосталяет доступ к GPT-3.5 и GPT-4"
-  };    
+      "https://chatgpt-clone-ten-nu.vercel.app":"Сервис предосталяет доступ к GPT-3.5 и GPT-4",
+      "https://www.florafauna.ai/":"Редактор изображений и ВИДЕО по промту",
+      "https://www.cutout.pro/photo-enhancer-sharpener-upscaler/upload":"ИИ сервис для улучшения качества изображений",
+      "https://huggingface.co/spaces/starvector/starvector-1b-im2svg":"Нейросеть для генерации SVG из любой картинки",
+      "https://noowai.com/":"Бесплатный чат-бот и помощник, который может бесплатно общаться, отвечать на вопросы и помогать вам с работой",
+      "https://chat.typegpt.net/":"Сервис предоставляет доступ к различным LLM, работает не во всех браузерах",
+      "https://huggingface.co/spaces/enzostvs/deepsite":"Бесплатный аналог Cursor прямо в браузере"
+  };     
 
   function countElements()
   {

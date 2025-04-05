@@ -1007,9 +1007,12 @@ listItems.forEach((li) => {
       "https://huggingface.co/spaces/starvector/starvector-1b-im2svg":"Нейросеть для генерации SVG из любой картинки",
       "https://noowai.com/":"Бесплатный чат-бот и помощник, который может бесплатно общаться, отвечать на вопросы и помогать вам с работой",
       "https://chat.typegpt.net/":"Сервис предоставляет доступ к различным LLM, работает не во всех браузерах",
-      "https://huggingface.co/spaces/enzostvs/deepsite":"Бесплатный аналог Cursor прямо в браузере"
-  };     
-
+      "https://huggingface.co/spaces/enzostvs/deepsite":"Бесплатный аналог Cursor прямо в браузере",
+      "https://auphonic.com/":"Бесплатная нейросеть, которая буквально спасает испорченные записи",
+      "https://huggingface.co/spaces/jasperai/Flux.1-dev-Controlnet-Upscaler":"Сервис для повышения качества изображений",
+      "https://huggingface.co/spaces/nightfury/Image_Face_Upscale_Restoration-GFPGAN":"Сервис для повышения качества изображений",
+      "https://www.clear-background.com/remove-bg":"Сервис позволяет удалить фон у изображений"
+  };    
   function countElements()
   {
      // Выбираем все элементы li на странице

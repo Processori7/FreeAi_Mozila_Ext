@@ -1011,7 +1011,17 @@ listItems.forEach((li) => {
       "https://auphonic.com/":"Бесплатная нейросеть, которая буквально спасает испорченные записи",
       "https://huggingface.co/spaces/jasperai/Flux.1-dev-Controlnet-Upscaler":"Сервис для повышения качества изображений",
       "https://huggingface.co/spaces/nightfury/Image_Face_Upscale_Restoration-GFPGAN":"Сервис для повышения качества изображений",
-      "https://www.clear-background.com/remove-bg":"Сервис позволяет удалить фон у изображений"
+      "https://www.clear-background.com/remove-bg":"Сервис позволяет удалить фон у изображений",
+      "https://gitmcp.io/":"Инструмент для разработчиков, который позволяет подключить свой репозиторий и работать с ним используя ИИ",
+      "https://wordpress.com/ai-website-builder/":"ИИ создатель сайтов от известного конструктора WordPress",
+      "https://firebase.studio/":"Новый сервис от компании Google для генерации приложений",
+      "https://t.me/askplexbot":"Бот Perplexity в Телеграм",
+      "https://o3minichat.exa.ai/":"Сервис предоставляет доступ к GPT-o3",
+      "https://www.logopony.com/":"Бесплатный генератор логотипов с искусственным интеллектом, где вы можете создать пользовательский логотип для чего угодно всего за несколько кликов",
+      "https://digma.ai/":"Инструмент анализа кода на основе ИИ, который дает разработчикам постоянную обратную связь для ускорения циклов разработки",
+      "https://llmchat.co/chat":"Сервис позволяет общаться с различными LLM, имеет ограничение на 10 бесплатных запросов в день",
+      "https://chat.sonus.ai/":"Сервис позволяет общаться с различными LLM от Sonus",
+      "https://delve.a9.io/":"Сервис который помогает углубиться во все нюансы любой темы"
   };    
   function countElements()
   {

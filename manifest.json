@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Free Ai Services",
-  "version": "16.6.54",
+  "version": "16.6.55",
   "icons": {
     "32": "icon-32.png",
     "128": "icon.png"

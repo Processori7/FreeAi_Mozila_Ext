@@ -1073,8 +1073,16 @@ listItems.forEach((li) => {
       "https://www.toolsmart.ai/feature-free-undetectable-ai/":"ИИ сервис для очеловечивания ИИ контента",
       "https://lipsync.video/":"Генератор коротких видео",
       "https://database.build/":"Сервис в котором можно запускать и тестировать PostgreSQL прямо в браузере",
-      "https://huggingface.co/spaces/ByteDance/Dolphin":"OCR-модель Dolphin для распознавания любых PDF"
-  };         
+      "https://huggingface.co/spaces/ByteDance/Dolphin":"OCR-модель Dolphin для распознавания любых PDF",
+      "https://www.rocket.new/":"Генератор приложений и сайтов, требуется авторизация",
+      "https://www.chatwithmono.xyz/":"Система предоставляет бесплатный доступ к различным LLM, поисковой системе с ИИ и генератору изображений",
+      "https://www.alphaxiv.org/assistant":"Поисковая система с ИИ с функцией глубокого поиска, требудется авторизация",
+      "https://gptkit.ai/":"Детектор ИИ контента",
+      "https://www.director.ai/":"Это аналог Operator от OpenAI, который создаёт скрипты веб-автоматизации с помощью простых промтов",
+      "https://www.minimax.io/audio/text-to-speech":"ИИ для клонирования голоса и генерации речи или музыки, требуется авторизация",
+      "https://aicg.wisecleaner.com/":"Сервис предоставляет доступ к множеству LLM, требуется авторизация"
+  };
+          
   function countElements()
   {
      // Выбираем все элементы li на странице

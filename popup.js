@@ -1101,7 +1101,10 @@ listItems.forEach((li) => {
       "https://www.superfile.ai/":"Множество полезных сервисов для работы с файлами",
       "https://www.orchids.app/":"Генератор сайтов и приложений, требуется авторизация",
       "https://transcribetext.com/":"Сервис, который превращает любое аудио или видео в текст, даже если там помехи",
-      "https://app.twaingpt.com/":"Сервис для очеловечивания ИИ контента"
+      "https://app.twaingpt.com/":"Сервис для очеловечивания ИИ контента",
+      "https://noiz.io/free-ai-tools/":"Сервис предоставляет множество полезных инструментов, ключая чат с файлами и тд",
+      "https://huggingface.co/spaces/llamameta/Grok-4-heavy-free":"Сервис предоставляет доступ к LLM Grok-4 Heavy",
+      "https://www.promptcannon.com/":"Сервис предоставляет жоступ к множеству LLM и позволяет получать ответ сразу от нескольких LLM, требуется регистрация"
   };    
           
   function countElements()
@@ -1113,7 +1116,7 @@ listItems.forEach((li) => {
      // Находим элемент, куда будем выводить результат
      const liCountContainer = document.getElementById("liCount");
      // Выводим результат
-     liCountContainer.textContent =  translateText("Количество бесплатных сервисов: ", userLang) + " " + count;
+     liCountContainer.textContent =  translateText("Количество бесплатных сервисов: ", "ru") + " " + count;
   }
   function applyTheme(backgroundColor, textColor, liColor, liTextColor) {
     try {

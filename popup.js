@@ -1113,8 +1113,13 @@ listItems.forEach((li) => {
       "https://webos.live/":"Достаточно интересный проект операциионной системы с внедренным ИИ агентом, проект еще разрабатывается, некоторые функции могут не работать",
       "https://huggingface.co/spaces/Qwen/Qwen3-MT-Demo":"Переводчик от Qwen",
       "https://pollinations.ai/":"Бесплатный сервис, который предоставляет доступ к различным LLM, доступ к генерации фото и чату можно получить сразу на главной странице",
-      "https://writify.ai/tool/":"Множество бесплатных инструментов с ИИ"
-  };       
+      "https://writify.ai/tool/":"Множество бесплатных инструментов с ИИ",
+      "https://faces.app/":"Генератор сайтов",
+      "https://www.waveterm.dev/":"Продвинутый терминал для разработчиков с интегрированным браузером и ИИ",
+      "https://cline.bot/":"Расширения для VS Code и других платформ, которое позволяет подключать ИИ агентов",
+      "https://addons.mozilla.org/en-US/firefox/addon/polination-ai-chat/":"Бесплатное расширение, которое позволяет взаимодействовать с API Polinations AI, данное расширение для Firefox",
+      "https://github.com/Processori7/Poli_Sidebar":"Бесплатное расширение, которое позволяет взаимодействовать с API Polinations AI, данное расширение для Chrome"
+  };        
           
   function countElements()
   {

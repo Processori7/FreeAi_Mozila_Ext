@@ -32,10 +32,14 @@ document.addEventListener("DOMContentLoaded", function () {
   const advancedSearch = document.getElementById('advancedSearch');
   const themeMenuToggle = document.getElementById("theme-menu-toggle");
   const themeDropdownMenu = document.getElementById("theme-dropdown-menu");
+  const searchSuggestions = document.getElementById("searchSuggestions"); // Используется для подсказок во время поиска
   const width = window.innerWidth;
   const height = window.innerHeight;
   body.style.minWidth = `${width}px`;
   body.style.minHeight = `${height}px`;
+  // Переменные для подсказок
+  let currentSuggestionIndex = -1;
+  let suggestionsList = [];
   // Флаг для отслеживания, добавлены ли чекбоксы
   let checkboxesAdded = false;
   let translateUrl = "";
@@ -394,50 +398,193 @@ favoriteCheckbox.addEventListener('click', function() {
 });
 
 
-//Поиск
-searchInput.addEventListener('input', function() {
-  const filter = searchInput.value.toLowerCase().trim();
-  const filterWords = filter.split(/\s+/).filter(word => word.length > 0); // Split by spaces and remove empty strings
+//Поиск с подсказками
+
+// Функция для создания подсказок
+function generateSuggestions(query) {
+  if (!query || query.length < 2) {
+    return [];
+  }
+
+  const suggestions = new Set();
+  const queryLower = query.toLowerCase();
+  const queryWords = queryLower.split(/\s+/).filter(word => word.length > 1);
+
+  // Поиск по названиям сервисов
+  items.forEach(item => {
+    const text = (item.textContent || item.innerText).toLowerCase();
+    const originalText = (item.textContent || item.innerText).trim();
+    
+    if (text.startsWith(queryLower)) {
+      suggestions.add(originalText);
+    }
+    
+    queryWords.forEach(word => {
+      if (text.includes(word)) {
+        suggestions.add(originalText);
+      }
+    });
+  });
+
+  return Array.from(suggestions).slice(0, 8);
+}
+
+// Функция для отображения подсказок
+function showSuggestions(suggestions) {
+  if (!suggestions || suggestions.length === 0) {
+    searchSuggestions.style.display = 'none';
+    return;
+  }
+
+  searchSuggestions.innerHTML = '';
+  suggestionsList = suggestions;
+  currentSuggestionIndex = -1;
+
+  suggestions.forEach((suggestion, index) => {
+    const suggestionElement = document.createElement('div');
+    suggestionElement.className = 'suggestion-item';
+    suggestionElement.textContent = suggestion;
+    suggestionElement.dataset.index = index;
+
+    suggestionElement.addEventListener('click', () => {
+      searchInput.value = suggestion;
+      searchSuggestions.style.display = 'none';
+      performSearch(suggestion, true);
+    });
+
+    suggestionElement.addEventListener('mouseenter', () => {
+      document.querySelectorAll('.suggestion-item').forEach(item => {
+        item.classList.remove('selected');
+      });
+      suggestionElement.classList.add('selected');
+      currentSuggestionIndex = index;
+    });
+
+    searchSuggestions.appendChild(suggestionElement);
+  });
+
+  searchSuggestions.style.display = 'block';
+}
+
+// Функция для навигации по подсказкам с клавиатуры
+function navigateSuggestions(direction) {
+  const suggestions = document.querySelectorAll('.suggestion-item');
+  if (suggestions.length === 0) return;
+
+  if (currentSuggestionIndex >= 0 && currentSuggestionIndex < suggestions.length) {
+    suggestions[currentSuggestionIndex].classList.remove('selected');
+  }
+
+  if (direction === 'down') {
+    currentSuggestionIndex = Math.min(currentSuggestionIndex + 1, suggestions.length - 1);
+  } else if (direction === 'up') {
+    currentSuggestionIndex = Math.max(currentSuggestionIndex - 1, -1);
+  }
+
+  if (currentSuggestionIndex >= 0 && currentSuggestionIndex < suggestions.length) {
+    suggestions[currentSuggestionIndex].classList.add('selected');
+    searchInput.value = suggestionsList[currentSuggestionIndex];
+  }
+}
+
+// Функция для выполнения поиска
+function performSearch(query, exactMatch = false) {
+  const filter = query.toLowerCase().trim();
+  const filterWords = filter.split(/\s+/).filter(word => word.length > 0);
   
   if (!filter) {
-      // If search is empty, show all items
-      items.forEach(item => {
-          item.style.display = "";
-      });
-      return;
+    items.forEach(item => {
+      item.style.display = "";
+      item.style.order = "";
+    });
+    return;
+  }
+
+  if (exactMatch) {
+    items.forEach(item => {
+      const originalText = (item.textContent || item.innerText).trim();
+      const matches = originalText.toLowerCase() === filter;
+      item.style.display = matches ? "" : "none";
+      item.style.order = "";
+    });
+    return; 
   }
 
   items.forEach(item => {
-      const text = (item.textContent || item.innerText).toLowerCase();
-      const website = item.getAttribute('data-website');
-      let descriptionText = "";
-      
-      // Get description based on language
-      if (userLang.startsWith("ru")) {
-          descriptionText = websiteDescriptionsRu[website] || "";
-      } else {
-          let userDesc = localStorage.getItem('translatedDescriptions');
-          if (userDesc) {
-              userDesc = JSON.parse(userDesc);
-              const description = userDesc.find(desc => desc.url === website);
-              if (description) {
-                  descriptionText = description.translatedText;
-              }
-          }
+    const text = (item.textContent || item.innerText).toLowerCase();
+    const website = item.getAttribute('data-website');
+    let descriptionText = "";
+    
+    if (userLang.startsWith("ru")) {
+      descriptionText = websiteDescriptionsRu[website] || "";
+    } else {
+      let userDesc = localStorage.getItem('translatedDescriptions');
+      if (userDesc) {
+        userDesc = JSON.parse(userDesc);
+        const description = userDesc.find(desc => desc.url === website);
+        if (description) {
+          descriptionText = description.translatedText;
+        }
       }
-      descriptionText = descriptionText.toLowerCase();
+    }
+    descriptionText = descriptionText.toLowerCase();
 
-      // First check if any word matches the element text
-      const matchesText = filterWords.some(word => text.includes(word));
-      if (matchesText) {
-          item.style.display = ""; // Show item if text matches
-          return;
-      }
+    const matchesText = filterWords.some(word => text.includes(word));
+    if (matchesText) {
+      item.style.display = "";
+      return;
+    }
 
-      // If text doesn't match, check description
-      const matchesDescription = filterWords.some(word => descriptionText.includes(word));
-      item.style.display = matchesDescription ? "" : "none";
+    const matchesDescription = filterWords.some(word => descriptionText.includes(word));
+    item.style.display = matchesDescription ? "" : "none";
   });
+}
+
+searchInput.addEventListener('input', function() {
+  const query = searchInput.value.trim();
+  
+  if (query.length >= 2) {
+    const suggestions = generateSuggestions(query);
+    showSuggestions(suggestions);
+  } else {
+    searchSuggestions.style.display = 'none';
+  }
+  
+  performSearch(query);
+});
+
+searchInput.addEventListener('keydown', function(e) {
+  if (searchSuggestions.style.display === 'none') return;
+  
+  switch(e.key) {
+    case 'ArrowDown':
+      e.preventDefault();
+      navigateSuggestions('down');
+      break;
+    case 'ArrowUp':
+      e.preventDefault();
+      navigateSuggestions('up');
+      break;
+    case 'Enter':
+      e.preventDefault();
+      if (currentSuggestionIndex >= 0 && currentSuggestionIndex < suggestionsList.length) {
+        searchInput.value = suggestionsList[currentSuggestionIndex];
+        searchSuggestions.style.display = 'none';
+        performSearch(suggestionsList[currentSuggestionIndex], true);
+      }
+      break;
+    case 'Escape':
+      searchSuggestions.style.display = 'none';
+      currentSuggestionIndex = -1;
+      break;
+  }
+});
+
+document.addEventListener('click', function(e) {
+  if (!searchInput.contains(e.target) && !searchSuggestions.contains(e.target)) {
+    searchSuggestions.style.display = 'none';
+    currentSuggestionIndex = -1;
+  }
 });
   
 
@@ -465,12 +612,28 @@ if (userLang.startsWith('ru')) {
   openOnRightClick.nextSibling.textContent="Открывать сайт в новой вкладке при нажатии правой кнопкой мыши";
   copyOnRightClick.nextSibling.textContent="Копировать ссылку при нажатии правой кнопкой мыши";
   NewYearTheme.nextSibling.textContent = "Новогодняя тема";
-  document.querySelector('#theme-settings-title').textContent = 'Настройки темы';
-  document.querySelector('#background-color .translate-text').textContent = 'Цвет фона:';
-  document.querySelector('#text-color-headings .translate-text').textContent = 'Цвет заголовков:';
-  document.querySelector('#li-back-color .translate-text').textContent = 'Цвет фона элементов:';
-  document.querySelector('#li-text-color .translate-text').textContent = 'Цвет текста элементов:';
-  document.querySelector('#resetTheme .translate-text').textContent = 'Сбросить тему';
+  const themeSettingsTitle = document.querySelector('#theme-settings-title');
+  if (themeSettingsTitle) themeSettingsTitle.textContent = 'Настройки темы';
+  const bgColorElement = document.querySelector('#background-color .translate-text');
+  if (bgColorElement) bgColorElement.textContent = 'Цвет фона:';
+  const textColorElement = document.querySelector('#text-color-headings .translate-text');
+  if (textColorElement) textColorElement.textContent = 'Цвет заголовков:';
+  const liBackColorElement = document.querySelector('#li-back-color .translate-text');
+  if (liBackColorElement) liBackColorElement.textContent = 'Цвет фона элементов:';
+  const liTextColorElement = document.querySelector('#li-text-color .translate-text');
+  if (liTextColorElement) liTextColorElement.textContent = 'Цвет текста элементов:';
+  const tooltipBgColorElement = document.querySelector('#tooltip-background-color .translate-text');
+  if (tooltipBgColorElement) tooltipBgColorElement.textContent = 'Цвет фона подсказок:';
+  const fontFamilyElement = document.querySelector('#font-family-settings .translate-text');
+  if (fontFamilyElement) fontFamilyElement.textContent = 'Семейство шрифтов:';
+  const headingFontSizeElement = document.querySelector('#heading-font-size-settings .translate-text');
+  if (headingFontSizeElement) headingFontSizeElement.textContent = 'Размер шрифта заголовков:';
+  const itemFontSizeElement = document.querySelector('#item-font-size-settings .translate-text');
+  if (itemFontSizeElement) itemFontSizeElement.textContent = 'Размер шрифта элементов:';
+  const tooltipFontSizeElement = document.querySelector('#tooltip-font-size-settings .translate-text');
+  if (tooltipFontSizeElement) tooltipFontSizeElement.textContent = 'Размер шрифта подсказок:';
+  const resetThemeElement = document.querySelector('#resetTheme .translate-text');
+  if (resetThemeElement) resetThemeElement.textContent = 'Сбросить тему';
   advancedSearch.style.display = "none";
   document.getElementById('advancedSearchText').style.display="none";
 }
@@ -503,12 +666,28 @@ aiOther.innerText = translateText("Другие бесплатные серви�
 openOnRightClick.nextSibling.textContent=translateText("Открывать сайт в новой вкладке при нажатии правой кнопкой мыши", "ru");
 copyOnRightClick.nextSibling.textContent=translateText("Копировать ссылку при нажатии правой кнопкой мыши", "ru");
 NewYearTheme.nextSibling.textContent = translateText("Новогодняя тема", "ru");
-document.querySelector('#theme-settings-title').textContent = translateText('Настройки темы', "ru");
-document.querySelector('#background-color .translate-text').textContent = translateText('Цвет фона:', "ru");
-document.querySelector('#text-color-headings .translate-text').textContent = translateText('Цвет заголовков:', "ru");
-document.querySelector('#li-back-color .translate-text').textContent = translateText('Цвет фона элементов:', "ru");
-document.querySelector('#li-text-color .translate-text').textContent = translateText('Цвет текста элементов:', "ru");
-document.querySelector('#resetTheme .translate-text').textContent = translateText('Сбросить тему', "ru");
+const themeSettingsTitleTranslate = document.querySelector('#theme-settings-title');
+if (themeSettingsTitleTranslate) themeSettingsTitleTranslate.textContent = translateText('Настройки темы', "ru");
+const bgColorTranslateElement = document.querySelector('#background-color .translate-text');
+if (bgColorTranslateElement) bgColorTranslateElement.textContent = translateText('Цвет фона:', "ru");
+const textColorTranslateElement = document.querySelector('#text-color-headings .translate-text');
+if (textColorTranslateElement) textColorTranslateElement.textContent = translateText('Цвет заголовков:', "ru");
+const liBackColorTranslateElement = document.querySelector('#li-back-color .translate-text');
+if (liBackColorTranslateElement) liBackColorTranslateElement.textContent = translateText('Цвет фона элементов:', "ru");
+const liTextColorTranslateElement = document.querySelector('#li-text-color .translate-text');
+if (liTextColorTranslateElement) liTextColorTranslateElement.textContent = translateText('Цвет текста элементов:', "ru");
+const tooltipBgColorTranslateElement = document.querySelector('#tooltip-background-color .translate-text');
+if (tooltipBgColorTranslateElement) tooltipBgColorTranslateElement.textContent = translateText('Цвет фона подсказок:', "ru");
+const fontFamilyTranslateElement = document.querySelector('#font-family-settings .translate-text');
+if (fontFamilyTranslateElement) fontFamilyTranslateElement.textContent = translateText('Семейство шрифтов:', "ru");
+const headingFontSizeTranslateElement = document.querySelector('#heading-font-size-settings .translate-text');
+if (headingFontSizeTranslateElement) headingFontSizeTranslateElement.textContent = translateText('Размер шрифта заголовков:', "ru");
+const itemFontSizeTranslateElement = document.querySelector('#item-font-size-settings .translate-text');
+if (itemFontSizeTranslateElement) itemFontSizeTranslateElement.textContent = translateText('Размер шрифта элементов:', "ru");
+const tooltipFontSizeTranslateElement = document.querySelector('#tooltip-font-size-settings .translate-text');
+if (tooltipFontSizeTranslateElement) tooltipFontSizeTranslateElement.textContent = translateText('Размер шрифта подсказок:', "ru");
+const resetThemeTranslateElement = document.querySelector('#resetTheme .translate-text');
+if (resetThemeTranslateElement) resetThemeTranslateElement.textContent = translateText('Сбросить тему', "ru");
 advancedSearch.nextSibling.textContent = translateText("Enable contextual search (Attention! Initialization can take up to 20 seconds on first startup)", "en");
 document.getElementById('advancedSearchText').style.display="block";
 }
@@ -569,7 +748,11 @@ listItems.forEach((li) => {
         var aiMenuItems = document.querySelectorAll('.aiMenu li');
         var popup = document.createElement('div');
         popup.classList.add('popup');
+        popup.id = 'serviceDescriptionPopup'; // Add ID for theme targeting
         document.body.appendChild(popup); // Добавляем popup в body один раз
+        
+        // Apply initial theme styling to popup
+        applyThemeToPopup(popup);
     
         var descriptions = websiteDescriptionsRu;
             
@@ -591,6 +774,9 @@ listItems.forEach((li) => {
                         popup.textContent =translatedText;
                     }
 
+                    // Apply theme EVERY TIME before showing popup
+                    applyThemeToPopup(popup);
+                    
                     // Устанавливаем позицию popup
                     popup.style.left = event.pageX + 'px'; // Позиция по X
                     popup.style.top = event.pageY + 'px'; // Позиция по Y
@@ -602,6 +788,45 @@ listItems.forEach((li) => {
                 popup.classList.remove('show'); // Скрываем popup
             });
         });
+    }
+    
+    // Function to apply theme to service description popup
+    function applyThemeToPopup(popup) {
+        if (!popup) return; // Safety check
+        
+        try {
+            const currentTheme = JSON.parse(localStorage.getItem('customTheme')) || defaultTheme;
+            const tooltipBgColor = currentTheme.tooltipBgColor || localStorage.getItem('tooltipBgColor') || defaultTheme.tooltipBgColor;
+            const tooltipFontSize = currentTheme.tooltipFontSize || localStorage.getItem('tooltipFontSize') || defaultTheme.tooltipFontSize;
+            const fontFamily = currentTheme.fontFamily || localStorage.getItem('fontFamily') || defaultTheme.fontFamily;
+            const textColor = currentTheme.textColor || defaultTheme.textColor;
+            
+            // Clear any existing styles first
+            popup.style.cssText = '';
+            
+            // Use !important to override any CSS styles
+            popup.style.setProperty('background-color', tooltipBgColor, 'important');
+            popup.style.setProperty('font-size', tooltipFontSize + 'px', 'important');
+            popup.style.setProperty('font-family', fontFamily, 'important');
+            popup.style.setProperty('color', textColor, 'important');
+            popup.style.setProperty('border', '1px solid ' + tooltipBgColor, 'important');
+            popup.style.setProperty('border-radius', '4px', 'important');
+            popup.style.setProperty('padding', '8px 12px', 'important');
+            popup.style.setProperty('box-shadow', '0 2px 8px rgba(0,0,0,0.3)', 'important');
+            popup.style.setProperty('z-index', '10000', 'important');
+            popup.style.setProperty('position', 'absolute', 'important');
+            popup.style.setProperty('max-width', '300px', 'important');
+            popup.style.setProperty('word-wrap', 'break-word', 'important');
+            popup.style.setProperty('line-height', '1.4', 'important');
+            
+            console.log('Applied tooltip theme:', { tooltipBgColor, tooltipFontSize, fontFamily, textColor });
+        } catch (error) {
+            console.error('Error applying tooltip theme:', error);
+            // Fallback styling
+            popup.style.setProperty('background-color', '#333333', 'important');
+            popup.style.setProperty('color', '#ffffff', 'important');
+            popup.style.setProperty('font-size', '14px', 'important');
+        }
     }
 
     function translate_and_write_desc() {
@@ -1135,8 +1360,10 @@ listItems.forEach((li) => {
       "https://ebank.nz/aiartgenerator":"Бесплатный сервис для генерации изображений, поддерживает различные стили",
       "https://www.texttospeechpro.com/tts":"Сервис для озвучивания текста",
       "https://x-minus.pro/ai":"Сервис предлагает набор аудиоинструментов с ИИ",
-      "https://postspark.app/screenshot":"Сервис в котором можно быстро собрать красивый дизайн, макет или скриншот проекта"
-  };          
+      "https://postspark.app/screenshot":"Сервис в котором можно быстро собрать красивый дизайн, макет или скриншот проекта",
+      "https://processor.alwaysdata.net/":"Сайт с бесплатными сервисами с ИИ, теперь расширение будет с Вами всегда",
+      "https://www.zeroregai.com/":"Сервис предоставляет доступ к нескольким LLM"
+  };           
           
   function countElements()
   {
@@ -1151,22 +1378,41 @@ listItems.forEach((li) => {
   }
   function applyTheme(backgroundColor, textColor, liColor, liTextColor) {
     try {
+      // Get font settings from localStorage
+      const fontFamily = localStorage.getItem('fontFamily') || "'Droid serif', serif";
+      const headingFontSize = parseInt(localStorage.getItem('headingFontSize')) || 18;
+      const itemFontSize = parseInt(localStorage.getItem('itemFontSize')) || 14;
+      const tooltipFontSize = parseInt(localStorage.getItem('tooltipFontSize')) || 13;
+      const tooltipBgColor = localStorage.getItem('tooltipBgColor') || '#333333';
+      
       // Применяем основные цвета
       if (document.body) {
         document.body.style.backgroundColor = backgroundColor;
+        document.body.style.fontFamily = fontFamily;
       }
       
       const h1Element = document.querySelector('h1');
       if (h1Element) {
         h1Element.style.color = textColor;
+        h1Element.style.fontFamily = fontFamily;
+        h1Element.style.fontSize = headingFontSize + 'px';
       }
+      
+      // Apply font family and size to all headings
+      const headings = document.querySelectorAll('h1, h2, h3, .clickable-element');
+      headings.forEach(heading => {
+        heading.style.fontFamily = fontFamily;
+        heading.style.fontSize = headingFontSize + 'px';
+      });
   
       // Цвета элементов списка
       const listItems = document.querySelectorAll('.aiMenu li');
       listItems.forEach(li => {
         if (li) {
           li.style.backgroundColor = liColor;
-          li.style.color = liTextColor; // Используем liTextColor если задан, иначе textColor
+          li.style.color = liTextColor;
+          li.style.fontFamily = fontFamily;
+          li.style.fontSize = itemFontSize + 'px';
         }
       });
   
@@ -1177,14 +1423,38 @@ listItems.forEach((li) => {
       if (themeSettings) {
         themeSettings.style.backgroundColor = liColor;
         themeSettings.style.color = textColor;
+        themeSettings.style.fontFamily = fontFamily;
       }
       
       headerDropdownItems.forEach(item => {
         if (item) {
           item.style.backgroundColor = liColor;
           item.style.color = textColor;
+          item.style.fontFamily = fontFamily;
+          item.style.fontSize = itemFontSize + 'px';
         }
       });
+  
+      // Apply font settings to theme controls and labels
+      const themeLabels = document.querySelectorAll('.settings-panel label, .color-picker-group label, .font-settings-group label, .size-settings-group label');
+      themeLabels.forEach(label => {
+        label.style.fontFamily = fontFamily;
+        label.style.fontSize = itemFontSize + 'px';
+      });
+      
+      // Apply font settings to translate-text spans
+      const translateTexts = document.querySelectorAll('.translate-text');
+      translateTexts.forEach(text => {
+        text.style.fontFamily = fontFamily;
+        text.style.fontSize = itemFontSize + 'px';
+      });
+      
+      // Apply heading font to theme settings title
+      const themeSettingsTitle = document.querySelector('#theme-settings-title');
+      if (themeSettingsTitle) {
+        themeSettingsTitle.style.fontFamily = fontFamily;
+        themeSettingsTitle.style.fontSize = headingFontSize + 'px';
+      }
   
       // Адаптируем цвета меню
       const headerDropdownMenu = document.getElementById('header-dropdown-menu');
@@ -1200,6 +1470,7 @@ listItems.forEach((li) => {
       if (dropdownMenu) {
         dropdownMenu.style.backgroundColor = liColor;
         dropdownMenu.style.color = textColor;
+        dropdownMenu.style.fontFamily = fontFamily;
       }
   
       // Применяем стили к элементам выпадающего меню
@@ -1207,6 +1478,8 @@ listItems.forEach((li) => {
         if (item) {
           item.style.backgroundColor = liColor;
           item.style.color = textColor;
+          item.style.fontFamily = fontFamily;
+          item.style.fontSize = itemFontSize + 'px';
         }
       });
   
@@ -1214,25 +1487,33 @@ listItems.forEach((li) => {
     if (menuLabel) {
       menuLabel.style.backgroundColor = liColor;
       menuLabel.style.color = textColor;
+      menuLabel.style.fontFamily = fontFamily;
+      menuLabel.style.fontSize = itemFontSize + 'px';
     }
 
     if (headerMenuToggle) {
       headerMenuToggle.style.backgroundColor = liColor;
       headerMenuToggle.style.color = textColor;
+      headerMenuToggle.style.fontFamily = fontFamily;
+      headerMenuToggle.style.fontSize = itemFontSize + 'px';
     }
     if (themeMenuToggle) {
       themeMenuToggle.style.backgroundColor = liColor;
       themeMenuToggle.style.color = textColor;
+      themeMenuToggle.style.fontFamily = fontFamily;
+      themeMenuToggle.style.fontSize = itemFontSize + 'px';
     }
     
     if (headerDropdownMenu) {
       headerDropdownMenu.style.backgroundColor = backgroundColor;
       headerDropdownMenu.style.color = textColor;
+      headerDropdownMenu.style.fontFamily = fontFamily;
     }
     
     if (themeDropdownMenu) {
       themeDropdownMenu.style.backgroundColor = backgroundColor;
       themeDropdownMenu.style.color = textColor;
+      themeDropdownMenu.style.fontFamily = fontFamily;
     }
 
     // Применяем стили к поисковому полю
@@ -1240,6 +1521,32 @@ listItems.forEach((li) => {
       searchInput.style.backgroundColor = liColor;
       searchInput.style.color = textColor;
       searchInput.style.borderColor = liColor;
+      searchInput.style.fontFamily = fontFamily;
+      searchInput.style.fontSize = itemFontSize + 'px';
+    }
+
+    // Применяем стили к подсказкам
+    const searchSuggestions = document.getElementById('searchSuggestions');
+    if (searchSuggestions) {
+      searchSuggestions.style.backgroundColor = tooltipBgColor;
+      searchSuggestions.style.borderColor = liColor;
+      searchSuggestions.style.fontFamily = fontFamily;
+      searchSuggestions.style.fontSize = tooltipFontSize + 'px';
+    }
+
+    const suggestionItems = document.querySelectorAll('.suggestion-item');
+    suggestionItems.forEach(item => {
+      if (item) {
+        item.style.color = textColor;
+        item.style.fontFamily = fontFamily;
+        item.style.fontSize = tooltipFontSize + 'px';
+      }
+    });
+    
+    // Apply theme to service description popup
+    const servicePopup = document.getElementById('serviceDescriptionPopup');
+    if (servicePopup) {
+      applyThemeToPopup(servicePopup);
     }
   
       // Сохраняем текущую тему
@@ -1247,7 +1554,12 @@ listItems.forEach((li) => {
         backgroundColor,
         textColor,
         liColor,
-        liTextColor
+        liTextColor,
+        fontFamily,
+        headingFontSize,
+        itemFontSize,
+        tooltipFontSize,
+        tooltipBgColor
       };
       saveTheme(currentTheme);
   
@@ -1284,11 +1596,33 @@ listItems.forEach((li) => {
       const textColorPicker = document.getElementById('textColorPicker');
       const liColorPicker = document.getElementById('liColorPicker');
       const liTextColorPicker = document.getElementById('liTextColorPicker');
+      const tooltipBgColorPicker = document.getElementById('tooltipBgColorPicker');
   
       if (bgColorPicker) bgColorPicker.value = savedTheme.backgroundColor;
       if (textColorPicker) textColorPicker.value = savedTheme.textColor;
       if (liColorPicker) liColorPicker.value = savedTheme.liColor;
       if (liTextColorPicker) liTextColorPicker.value = savedTheme.liTextColor;
+      if (tooltipBgColorPicker) tooltipBgColorPicker.value = savedTheme.tooltipBgColor || '#333333';
+      
+      // Update font controls
+      const fontFamilySelect = document.getElementById('fontFamilySelect');
+      const headingFontSizeSlider = document.getElementById('headingFontSizeSlider');
+      const itemFontSizeSlider = document.getElementById('itemFontSizeSlider');
+      const tooltipFontSizeSlider = document.getElementById('tooltipFontSizeSlider');
+      
+      if (fontFamilySelect) fontFamilySelect.value = savedTheme.fontFamily || "'Droid serif', serif";
+      if (headingFontSizeSlider) {
+        headingFontSizeSlider.value = savedTheme.headingFontSize || 32;
+        updateFontSizeDisplay('headingFontSize', savedTheme.headingFontSize || 32);
+      }
+      if (itemFontSizeSlider) {
+        itemFontSizeSlider.value = savedTheme.itemFontSize || 16;
+        updateFontSizeDisplay('itemFontSize', savedTheme.itemFontSize || 16);
+      }
+      if (tooltipFontSizeSlider) {
+        tooltipFontSizeSlider.value = savedTheme.tooltipFontSize || 14;
+        updateFontSizeDisplay('tooltipFontSize', savedTheme.tooltipFontSize || 14);
+      }
   
       return savedTheme;
     } catch (error) {
@@ -1352,12 +1686,59 @@ listItems.forEach((li) => {
     // Кнопка сброса темы
     if (resetThemeBtn) {
       resetThemeBtn.addEventListener('click', () => {
+        // Clear all theme-related localStorage items
+        localStorage.removeItem('customTheme');
+        localStorage.removeItem('fontFamily');
+        localStorage.removeItem('headingFontSize');
+        localStorage.removeItem('itemFontSize');
+        localStorage.removeItem('tooltipFontSize');
+        localStorage.removeItem('tooltipBgColor');
+        
+        // Set default font settings in localStorage to ensure proper theme application
+        localStorage.setItem('fontFamily', defaultTheme.fontFamily);
+        localStorage.setItem('headingFontSize', defaultTheme.headingFontSize);
+        localStorage.setItem('itemFontSize', defaultTheme.itemFontSize);
+        localStorage.setItem('tooltipFontSize', defaultTheme.tooltipFontSize);
+        localStorage.setItem('tooltipBgColor', defaultTheme.tooltipBgColor);
+        
+        // Apply default theme
         applyTheme(
           defaultTheme.backgroundColor, 
           defaultTheme.textColor, 
           defaultTheme.liColor,
           defaultTheme.liTextColor
         );
+        
+        // Update all UI controls to show default values
+        const bgColorPicker = document.getElementById('bgColorPicker');
+        const textColorPicker = document.getElementById('textColorPicker');
+        const liColorPicker = document.getElementById('liColorPicker');
+        const liTextColorPicker = document.getElementById('liTextColorPicker');
+        const tooltipBgColorPicker = document.getElementById('tooltipBgColorPicker');
+        const fontFamilySelect = document.getElementById('fontFamilySelect');
+        const headingFontSizeSlider = document.getElementById('headingFontSizeSlider');
+        const itemFontSizeSlider = document.getElementById('itemFontSizeSlider');
+        const tooltipFontSizeSlider = document.getElementById('tooltipFontSizeSlider');
+        
+        if (bgColorPicker) bgColorPicker.value = defaultTheme.backgroundColor;
+        if (textColorPicker) textColorPicker.value = defaultTheme.textColor;
+        if (liColorPicker) liColorPicker.value = defaultTheme.liColor;
+        if (liTextColorPicker) liTextColorPicker.value = defaultTheme.liTextColor;
+        if (tooltipBgColorPicker) tooltipBgColorPicker.value = defaultTheme.tooltipBgColor;
+        if (fontFamilySelect) fontFamilySelect.value = defaultTheme.fontFamily;
+        
+        if (headingFontSizeSlider) {
+          headingFontSizeSlider.value = defaultTheme.headingFontSize;
+          updateFontSizeDisplay('headingFontSize', defaultTheme.headingFontSize);
+        }
+        if (itemFontSizeSlider) {
+          itemFontSizeSlider.value = defaultTheme.itemFontSize;
+          updateFontSizeDisplay('itemFontSize', defaultTheme.itemFontSize);
+        }
+        if (tooltipFontSizeSlider) {
+          tooltipFontSizeSlider.value = defaultTheme.tooltipFontSize;
+          updateFontSizeDisplay('tooltipFontSize', defaultTheme.tooltipFontSize);
+        }
       });
     }
   }
@@ -1366,13 +1747,135 @@ listItems.forEach((li) => {
     backgroundColor: '#a1a1a1',
     textColor: '#ffde22',
     liColor: '#70040e',
-    liTextColor: '#ffffff'
+    liTextColor: '#ffffff',
+    fontFamily: "'Droid serif', serif",
+    headingFontSize: 32,
+    itemFontSize: 16,
+    tooltipFontSize: 14,
+    tooltipBgColor: '#333333'
   };
   
-    // Проверяем обновления при загрузке страницы
+  // Font customization functions
+  function initializeFontControls() {
+    const fontFamilySelect = document.getElementById('fontFamilySelect');
+    const headingFontSizeSlider = document.getElementById('headingFontSizeSlider');
+    const itemFontSizeSlider = document.getElementById('itemFontSizeSlider');
+    const tooltipFontSizeSlider = document.getElementById('tooltipFontSizeSlider');
+    const tooltipBgColorPicker = document.getElementById('tooltipBgColorPicker');
+    
+    // Font family change handler
+    if (fontFamilySelect) {
+      fontFamilySelect.addEventListener('change', function() {
+        const selectedFont = this.value;
+        localStorage.setItem('fontFamily', selectedFont);
+        applyCurrentTheme();
+      });
+    }
+    
+    // Font size change handlers
+    if (headingFontSizeSlider) {
+      headingFontSizeSlider.addEventListener('input', function() {
+        const fontSize = this.value;
+        localStorage.setItem('headingFontSize', fontSize);
+        updateFontSizeDisplay('headingFontSize', fontSize);
+        applyCurrentTheme();
+      });
+    }
+    
+    if (itemFontSizeSlider) {
+      itemFontSizeSlider.addEventListener('input', function() {
+        const fontSize = this.value;
+        localStorage.setItem('itemFontSize', fontSize);
+        updateFontSizeDisplay('itemFontSize', fontSize);
+        applyCurrentTheme();
+      });
+    }
+    
+    if (tooltipFontSizeSlider) {
+      tooltipFontSizeSlider.addEventListener('input', function() {
+        const fontSize = this.value;
+        localStorage.setItem('tooltipFontSize', fontSize);
+        updateFontSizeDisplay('tooltipFontSize', fontSize);
+        applyCurrentTheme();
+      });
+    }
+    
+    // Tooltip background color change handler
+    if (tooltipBgColorPicker) {
+      tooltipBgColorPicker.addEventListener('change', function() {
+        const color = this.value;
+        localStorage.setItem('tooltipBgColor', color);
+        applyCurrentTheme();
+      });
+    }
+  }
+  
+  function updateFontSizeDisplay(sliderId, value) {
+    let valueSpanId;
+    if (sliderId === 'headingFontSize') {
+      valueSpanId = 'headingFontSizeValue';
+    } else if (sliderId === 'itemFontSize') {
+      valueSpanId = 'itemFontSizeValue';
+    } else if (sliderId === 'tooltipFontSize') {
+      valueSpanId = 'tooltipFontSizeValue';
+    }
+    
+    const valueSpan = document.getElementById(valueSpanId);
+    if (valueSpan) {
+      valueSpan.textContent = value + 'px';
+    }
+  }
+  
+  function applyCurrentTheme() {
+    const savedTheme = JSON.parse(localStorage.getItem('customTheme')) || defaultTheme;
+    applyTheme(
+      savedTheme.backgroundColor,
+      savedTheme.textColor,
+      savedTheme.liColor,
+      savedTheme.liTextColor
+    );
+  }
+  
+  // Initialize default theme values if localStorage is empty
+  function initializeDefaultTheme() {
+    // Check if any theme settings exist in localStorage
+    const hasCustomTheme = localStorage.getItem('customTheme');
+    const hasFontFamily = localStorage.getItem('fontFamily');
+    const hasHeadingFontSize = localStorage.getItem('headingFontSize');
+    const hasItemFontSize = localStorage.getItem('itemFontSize');
+    const hasTooltipFontSize = localStorage.getItem('tooltipFontSize');
+    const hasTooltipBgColor = localStorage.getItem('tooltipBgColor');
+    
+    // If no theme settings exist, set defaults
+    if (!hasCustomTheme && !hasFontFamily && !hasHeadingFontSize && !hasItemFontSize && !hasTooltipFontSize && !hasTooltipBgColor) {
+      localStorage.setItem('fontFamily', defaultTheme.fontFamily);
+      localStorage.setItem('headingFontSize', defaultTheme.headingFontSize);
+      localStorage.setItem('itemFontSize', defaultTheme.itemFontSize);
+      localStorage.setItem('tooltipFontSize', defaultTheme.tooltipFontSize);
+      localStorage.setItem('tooltipBgColor', defaultTheme.tooltipBgColor);
+      
+      // Save the complete default theme object
+      localStorage.setItem('customTheme', JSON.stringify(defaultTheme));
+    } else {
+      // If some settings exist but others don't, fill in the missing ones
+      if (!hasFontFamily) localStorage.setItem('fontFamily', defaultTheme.fontFamily);
+      if (!hasHeadingFontSize) localStorage.setItem('headingFontSize', defaultTheme.headingFontSize);
+      if (!hasItemFontSize) localStorage.setItem('itemFontSize', defaultTheme.itemFontSize);
+      if (!hasTooltipFontSize) localStorage.setItem('tooltipFontSize', defaultTheme.tooltipFontSize);
+      if (!hasTooltipBgColor) localStorage.setItem('tooltipBgColor', defaultTheme.tooltipBgColor);
+    }
+  }
+  
+    // Initialize font controls
+    initializeFontControls();
+    
+    // Initialize default theme values if not present in localStorage
+    initializeDefaultTheme();
+    
+    // Check for updates when popup loads
     checkForUpdates();
     loadTheme();
-    // Навешиваем обработчики
+    // Attach event handlers
     initializeThemeListeners();
     initializePopup();
     saveOriginalOrder();

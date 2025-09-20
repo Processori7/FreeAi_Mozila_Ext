@@ -413,20 +413,188 @@ function generateSuggestions(query) {
   // Поиск по названиям сервисов
   items.forEach(item => {
     const text = (item.textContent || item.innerText).toLowerCase();
-    const originalText = (item.textContent || item.innerText).trim();
+    const originalText = (item.textContent || item.innerText).trim(); // Сохраняем оригинальный регистр
+    const website = item.getAttribute('data-website');
     
+    // Проверяем совпадение с началом названия
     if (text.startsWith(queryLower)) {
-      suggestions.add(originalText);
+      suggestions.add(originalText); // Используем оригинальный регистр
     }
     
+    // Поиск по частичному совпадению
     queryWords.forEach(word => {
       if (text.includes(word)) {
-        suggestions.add(originalText);
+        suggestions.add(originalText); // Используем оригинальный регистр
       }
     });
   });
 
-  return Array.from(suggestions).slice(0, 8);
+  // Поиск по описаниям
+  const descriptions = userLang.startsWith("ru") ? websiteDescriptionsRu : getTranslatedDescriptions();
+  
+  Object.keys(descriptions).forEach(website => {
+    const description = descriptions[website];
+    if (description && typeof description === 'string') {
+      const descLower = description.toLowerCase();
+      
+      queryWords.forEach(word => {
+        if (descLower.includes(word)) {
+          // Находим соответствующий элемент
+          const item = document.querySelector(`[data-website="${website}"]`);
+          if (item) {
+            const originalText = (item.textContent || item.innerText).trim(); // Сохраняем оригинальный регистр
+            suggestions.add(originalText);
+          }
+        }
+      });
+    }
+  });
+
+  // Умные подсказки на основе контекста
+  const contextualSuggestions = generateContextualSuggestions(queryLower, descriptions);
+  contextualSuggestions.forEach(suggestion => suggestions.add(suggestion));
+
+  // Общие ключевые слова для подсказок
+  const keywordSuggestions = {
+    'чат': ['бесплатный чат', 'gpt чат', 'чат с ии'],
+    'gpt': ['chatgpt', 'gpt-4', 'gpt-3.5'],
+    'картинки': ['генератор картинок', 'создание изображений'],
+    'видео': ['генератор видео', 'создание видео'],
+    'поиск': ['поисковая система', 'поиск с ии'],
+    'chat': ['free chat', 'ai chat', 'chatgpt'],
+    'image': ['image generator', 'create images', 'ai images'],
+    'video': ['video generator', 'create video', 'ai video'],
+    'search': ['search engine', 'ai search'],
+    'code': ['coding ai', 'programming', 'code generator'],
+    'текст': ['генератор текста', 'написание текста'],
+    'text': ['text generator', 'writing assistant'],
+    'музыка': ['генератор музыки', 'создание музыки'],
+    'music': ['music generator', 'create music'],
+    'презентация': ['создание презентаций', 'слайды'],
+    'presentation': ['create presentations', 'slides']
+  };
+
+  // Добавляем ключевые подсказки
+  Object.keys(keywordSuggestions).forEach(keyword => {
+    if (queryLower.includes(keyword)) {
+      keywordSuggestions[keyword].forEach(suggestion => {
+        if (suggestion.toLowerCase().includes(queryLower)) {
+          suggestions.add(suggestion);
+        }
+      });
+    }
+  });
+
+  return Array.from(suggestions).slice(0, 8); // Ограничиваем количество подсказок
+}
+
+// Новая функция для генерации контекстных подсказок
+function generateContextualSuggestions(query, descriptions) {
+  const suggestions = [];
+  const queryWords = query.split(/\s+/).filter(word => word.length > 1);
+  
+  // Умные контекстные подсказки
+  const contextMap = {
+    // Описательные фразы на русском
+    'убрать фон': ['удаление фона', 'убрать фон с фото'],
+    'улучшить фото': ['улучшение качества', 'повышение разрешения'],
+    'генерировать код': ['создание кода', 'программирование'],
+    'перевести': ['переводчик', 'перевод текста'],
+    'математика': ['решение задач', 'математические примеры'],
+    'музыка': ['создание музыки', 'генератор музыки'],
+    'логотип': ['создание логотипа', 'генератор логотипов'],
+    'презентация': ['создание презентаций', 'слайды'],
+    
+    // Описательные фразы на английском
+    'remove background': ['background removal', 'remove bg'],
+    'enhance photo': ['photo enhancement', 'upscale image'],
+    'generate code': ['code generation', 'programming'],
+    'translate': ['translator', 'text translation'],
+    'math': ['solve math', 'mathematics'],
+    'music': ['create music', 'music generator'],
+    'logo': ['logo creation', 'logo generator'],
+    'presentation': ['create presentations', 'slides'],
+    
+    // Функциональные фразы
+    'бесплатно': ['free service', 'no registration'],
+    'без регистрации': ['no login required', 'instant access'],
+    'быстро': ['fast generation', 'quick results'],
+    'качественно': ['high quality', 'professional'],
+    'free': ['бесплатно', 'no cost'],
+    'no registration': ['без регистрации', 'instant'],
+    'fast': ['быстро', 'quick'],
+    'quality': ['качественно', 'professional']
+  };
+  
+  // Ищем контекстные совпадения
+  Object.keys(contextMap).forEach(contextKey => {
+    if (query.includes(contextKey)) {
+      contextMap[contextKey].forEach(suggestion => {
+        suggestions.push(suggestion);
+      });
+    }
+  });
+  
+  // Анализ описаний для поиска релевантных сервисов
+  const scoredServices = [];
+  
+  Object.keys(descriptions).forEach(website => {
+    const description = descriptions[website];
+    if (description && typeof description === 'string') {
+      let score = 0;
+      const descLower = description.toLowerCase();
+      
+      // Подсчитываем релевантность
+      queryWords.forEach(word => {
+        // Экранируем специальные символы для безопасного использования в regex
+        const escapedWord = escapeRegExp(word);
+        try {
+          const wordRegex = new RegExp(`\\b${escapedWord}\\b`, 'gi');
+          const matches = (descLower.match(wordRegex) || []).length;
+          score += matches * 2; // Точные совпадения слов весят больше
+        } catch (e) {
+          // Если возникла ошибка с regex, используем простое включение
+          console.warn('Regex error for contextual word:', word, e);
+        }
+        
+        if (descLower.includes(word)) {
+          score += 1; // Частичные совпадения
+        }
+      });
+      
+      if (score > 0) {
+        const item = document.querySelector(`[data-website="${website}"]`);
+        if (item) {
+          const serviceName = (item.textContent || item.innerText).trim();
+          scoredServices.push({ name: serviceName, score, description });
+        }
+      }
+    }
+  });
+  
+  // Сортируем по релевантности и добавляем лучшие совпадения
+  scoredServices
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 3)
+    .forEach(service => {
+      suggestions.push(service.name);
+    });
+  
+  return suggestions;
+}
+
+// Функция для получения переведённых описаний
+function getTranslatedDescriptions() {
+  const stored = localStorage.getItem('translatedDescriptions');
+  if (stored) {
+    const parsed = JSON.parse(stored);
+    const descriptions = {};
+    parsed.forEach(item => {
+      descriptions[item.url] = item.translatedText;
+    });
+    return descriptions;
+  }
+  return {};
 }
 
 // Функция для отображения подсказок
@@ -449,10 +617,11 @@ function showSuggestions(suggestions) {
     suggestionElement.addEventListener('click', () => {
       searchInput.value = suggestion;
       searchSuggestions.style.display = 'none';
-      performSearch(suggestion, true);
+      performSearch(suggestion, true); // Используем точное совпадение
     });
 
     suggestionElement.addEventListener('mouseenter', () => {
+      // Убираем выделение с всех элементов
       document.querySelectorAll('.suggestion-item').forEach(item => {
         item.classList.remove('selected');
       });
@@ -471,20 +640,61 @@ function navigateSuggestions(direction) {
   const suggestions = document.querySelectorAll('.suggestion-item');
   if (suggestions.length === 0) return;
 
+  // Убираем выделение с текущего элемента
   if (currentSuggestionIndex >= 0 && currentSuggestionIndex < suggestions.length) {
     suggestions[currentSuggestionIndex].classList.remove('selected');
   }
 
+  // Обновляем индекс с циклической навигацией
   if (direction === 'down') {
-    currentSuggestionIndex = Math.min(currentSuggestionIndex + 1, suggestions.length - 1);
+    currentSuggestionIndex = currentSuggestionIndex < suggestions.length - 1 
+      ? currentSuggestionIndex + 1 
+      : 0; // Переходим к первому элементу
   } else if (direction === 'up') {
-    currentSuggestionIndex = Math.max(currentSuggestionIndex - 1, -1);
+    currentSuggestionIndex = currentSuggestionIndex > 0 
+      ? currentSuggestionIndex - 1 
+      : suggestions.length - 1; // Переходим к последнему элементу
   }
 
+  // Применяем выделение к новому элементу
   if (currentSuggestionIndex >= 0 && currentSuggestionIndex < suggestions.length) {
-    suggestions[currentSuggestionIndex].classList.add('selected');
+    const selectedItem = suggestions[currentSuggestionIndex];
+    selectedItem.classList.add('selected');
+    
+    // Прокручиваем контейнер к выбранному элементу
+    scrollToSelectedSuggestion(selectedItem);
+    
+    // Обновляем значение в поле ввода
     searchInput.value = suggestionsList[currentSuggestionIndex];
   }
+}
+
+// Функция для прокрутки к выбранному элементу подсказки
+function scrollToSelectedSuggestion(selectedItem) {
+  if (!selectedItem || !searchSuggestions) return;
+  
+  const container = searchSuggestions;
+  const itemOffsetTop = selectedItem.offsetTop;
+  const itemHeight = selectedItem.offsetHeight;
+  const containerScrollTop = container.scrollTop;
+  const containerHeight = container.clientHeight;
+  
+  // Проверяем, находится ли элемент в видимой области
+  const itemBottom = itemOffsetTop + itemHeight;
+  const containerBottom = containerScrollTop + containerHeight;
+  
+  if (itemBottom > containerBottom) {
+    // Элемент ниже видимой области - прокручиваем вниз
+    container.scrollTop = itemOffsetTop + itemHeight - containerHeight + 5;
+  } else if (itemOffsetTop < containerScrollTop) {
+    // Элемент выше видимой области - прокручиваем вверх
+    container.scrollTop = itemOffsetTop - 5;
+  }
+}
+
+// Функция для экранирования специальных символов в регулярных выражениях
+function escapeRegExp(string) {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
 // Функция для выполнения поиска
@@ -493,6 +703,7 @@ function performSearch(query, exactMatch = false) {
   const filterWords = filter.split(/\s+/).filter(word => word.length > 0);
   
   if (!filter) {
+    // Если поиск пустой, показываем все элементы
     items.forEach(item => {
       item.style.display = "";
       item.style.order = "";
@@ -500,44 +711,140 @@ function performSearch(query, exactMatch = false) {
     return;
   }
 
+  // Если это точное совпадение (выбор из подсказок), обрабатываем отдельно
   if (exactMatch) {
     items.forEach(item => {
       const originalText = (item.textContent || item.innerText).trim();
       const matches = originalText.toLowerCase() === filter;
+      
+      // if (matches) {
+      //   console.log(`Exact match found: "${originalText}" matches "${query}"`);
+      // }
+      
       item.style.display = matches ? "" : "none";
       item.style.order = "";
     });
     return; 
   }
 
+  // Обычный поиск по релевантности
+  const descriptions = userLang.startsWith("ru") ? websiteDescriptionsRu : getTranslatedDescriptions();
+  const scoredItems = [];
+
   items.forEach(item => {
     const text = (item.textContent || item.innerText).toLowerCase();
     const website = item.getAttribute('data-website');
     let descriptionText = "";
     
-    if (userLang.startsWith("ru")) {
-      descriptionText = websiteDescriptionsRu[website] || "";
-    } else {
-      let userDesc = localStorage.getItem('translatedDescriptions');
-      if (userDesc) {
-        userDesc = JSON.parse(userDesc);
-        const description = userDesc.find(desc => desc.url === website);
-        if (description) {
-          descriptionText = description.translatedText;
+    // Получаем описание в зависимости от языка
+    if (descriptions[website]) {
+      descriptionText = descriptions[website].toLowerCase();
+    }
+
+    // Вычисляем релевантность
+    let relevanceScore = 0;
+
+    // Проверка названия сервиса
+    filterWords.forEach(word => {
+      // Экранируем специальные символы для безопасного использования в regex
+      const escapedWord = escapeRegExp(word);
+      // Точное совпадение слова в названии
+      try {
+        const exactWordMatch = new RegExp(`\\b${escapedWord}\\b`, 'gi');
+        const titleMatches = (text.match(exactWordMatch) || []).length;
+        relevanceScore += titleMatches * 100; // Максимальный приоритет для названий
+      } catch (e) {
+        // Если возникла ошибка с regex, используем простое включение
+        console.warn('Regex error for word:', word, e);
+      }
+      
+      // Начало названия
+      if (text.startsWith(word)) {
+        relevanceScore += 50;
+      }
+      
+      // Простое вхождение в название
+      if (text.includes(word)) {
+        relevanceScore += 20;
+      }
+    });
+
+    // Проверка описания
+    if (descriptionText) {
+      filterWords.forEach(word => {
+        // Экранируем специальные символы для безопасного использования в regex
+        const escapedWord = escapeRegExp(word);
+        // Точное совпадение слова в описании
+        try {
+          const exactWordMatch = new RegExp(`\\b${escapedWord}\\b`, 'gi');
+          const descMatches = (descriptionText.match(exactWordMatch) || []).length;
+          relevanceScore += descMatches * 10; // Средний приоритет для описаний
+        } catch (e) {
+          // Если возникла ошибка с regex, используем простое включение
+          console.warn('Regex error for word in description:', word, e);
         }
+        
+        // Простое вхождение в описание
+        if (descriptionText.includes(word)) {
+          relevanceScore += 5;
+        }
+      });
+    }
+
+    // Бонус за близость слов в описании
+    if (filterWords.length > 1 && descriptionText) {
+      const proximityBonus = calculateProximityBonus(filterWords, descriptionText);
+      relevanceScore += proximityBonus;
+    }
+
+    // Добавляем элемент в список только если есть хоть какие-то совпадения
+    // Показываем все элементы с любой релевантностью, скрываем только те, у которых совпадений совсем нет
+    if (relevanceScore > 0) {
+      scoredItems.push({ item, score: relevanceScore });
+    }
+  });
+
+  // Сортируем по релевантности и отображаем
+  const sortedItems = scoredItems.sort((a, b) => b.score - a.score);
+  
+  items.forEach(item => {
+    const scoredItem = sortedItems.find(si => si.item === item);
+    if (scoredItem) {
+      item.style.display = ""; // Показываем найденные элементы независимо от фильтров
+      item.style.order = -scoredItem.score; // Используем отрицательные значения для сортировки
+    } else {
+      item.style.display = "none";
+      item.style.order = "";
+    }
+  });
+}
+
+// Вспомогательная функция для вычисления бонуса за близость слов
+function calculateProximityBonus(words, text) {
+  let bonus = 0;
+  const positions = [];
+  
+  // Находим позиции всех слов
+  words.forEach(word => {
+    let index = text.indexOf(word);
+    while (index !== -1) {
+      positions.push(index);
+      index = text.indexOf(word, index + 1);
+    }
+  });
+  
+  // Вычисляем бонус за близость
+  if (positions.length > 1) {
+    positions.sort((a, b) => a - b);
+    for (let i = 0; i < positions.length - 1; i++) {
+      const distance = positions[i + 1] - positions[i];
+      if (distance < 50) { // Бонус за слова, находящиеся рядом
+        bonus += Math.max(0, 25 - distance);
       }
     }
-    descriptionText = descriptionText.toLowerCase();
-
-    const matchesText = filterWords.some(word => text.includes(word));
-    if (matchesText) {
-      item.style.display = "";
-      return;
-    }
-
-    const matchesDescription = filterWords.some(word => descriptionText.includes(word));
-    item.style.display = matchesDescription ? "" : "none";
-  });
+  }
+  
+  return bonus;
 }
 
 searchInput.addEventListener('input', function() {
@@ -550,9 +857,11 @@ searchInput.addEventListener('input', function() {
     searchSuggestions.style.display = 'none';
   }
   
+  // Выполняем поиск
   performSearch(query);
 });
 
+// Обработка навигации с клавиатуры
 searchInput.addEventListener('keydown', function(e) {
   if (searchSuggestions.style.display === 'none') return;
   
@@ -570,7 +879,7 @@ searchInput.addEventListener('keydown', function(e) {
       if (currentSuggestionIndex >= 0 && currentSuggestionIndex < suggestionsList.length) {
         searchInput.value = suggestionsList[currentSuggestionIndex];
         searchSuggestions.style.display = 'none';
-        performSearch(suggestionsList[currentSuggestionIndex], true);
+        performSearch(suggestionsList[currentSuggestionIndex], true); // Используем точное совпадение
       }
       break;
     case 'Escape':
@@ -580,6 +889,7 @@ searchInput.addEventListener('keydown', function(e) {
   }
 });
 
+// Скрываем подсказки при клике вне области поиска
 document.addEventListener('click', function(e) {
   if (!searchInput.contains(e.target) && !searchSuggestions.contains(e.target)) {
     searchSuggestions.style.display = 'none';
@@ -819,7 +1129,7 @@ listItems.forEach((li) => {
             popup.style.setProperty('word-wrap', 'break-word', 'important');
             popup.style.setProperty('line-height', '1.4', 'important');
             
-            console.log('Applied tooltip theme:', { tooltipBgColor, tooltipFontSize, fontFamily, textColor });
+            // console.log('Applied tooltip theme:', { tooltipBgColor, tooltipFontSize, fontFamily, textColor });
         } catch (error) {
             console.error('Error applying tooltip theme:', error);
             // Fallback styling
@@ -1362,7 +1672,14 @@ listItems.forEach((li) => {
       "https://x-minus.pro/ai":"Сервис предлагает набор аудиоинструментов с ИИ",
       "https://postspark.app/screenshot":"Сервис в котором можно быстро собрать красивый дизайн, макет или скриншот проекта",
       "https://processor.alwaysdata.net/":"Сайт с бесплатными сервисами с ИИ, теперь расширение будет с Вами всегда",
-      "https://www.zeroregai.com/":"Сервис предоставляет доступ к нескольким LLM"
+      "https://www.zeroregai.com/":"Сервис предоставляет доступ к нескольким LLM",
+      "https://www.anysummary.app/":"Помощник в работе с документами любого формата, позволяет быстро получать нужную информацию",
+      "https://www.meshy.ai/":"Сервис для генерации 3D-моделей, требуется авторизация",
+      "https://app.reve.com/home":"Фотошоп с ИИ, требуется авторизация",
+      "https://www.naturalreaders.com/online/":"Сервис для озвучивания текста натуральными голосами",
+      "https://lovevoice.ai/":"Сервис для озвучивания текста",
+      "https://speechma.com/":"Сервис для озвучивания текста, есть множество голосов",
+      "https://platform.decart.ai/":"ИИ-фотошоп для видео с бесплатным планом, требуется авторизация"
   };           
           
   function countElements()
@@ -1572,7 +1889,7 @@ listItems.forEach((li) => {
   function saveTheme(theme) {
     try {
       localStorage.setItem('customTheme', JSON.stringify(theme));
-      console.log('Тема сохранена:', theme);
+      // console.log('Тема сохранена:', theme);
     } catch (error) {
       console.error('Ошибка сохранения темы:', error);
     }

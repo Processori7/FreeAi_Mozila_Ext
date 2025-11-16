@@ -1690,8 +1690,16 @@ listItems.forEach((li) => {
       "https://stitch.withgoogle.com/":"Инструмент для быстрой генерации дизайна для Web-приложений и не только, требуется регистрация",
       "https://aistudio.google.com/welcome":"Сервис для работы с различными ИИ от Google, требуется авторизация",
       "https://www.aihumanizeer.com/":"Сервис для очеловечивания текста, бесплатно 5000 символов",
-      "https://perchance.org/humanize-ai-text":"Сервис для очеловечивания текста"
-  };   
+      "https://perchance.org/humanize-ai-text":"Сервис для очеловечивания текста",
+      "https://runable.com/":"Мультитул с ИИ, требуется авторизация",
+      "https://fish.audio":"Сервис для озвучки текста",
+      "https://www.datalab.to/playground/documents/new":" Chandra — новая, лучшая на сегодня OCR модель по распознаванию PDF и изображений и преобразующая их в текстовые документы",
+      "https://midigen.app/melody-generator/":"Генератор мелодий",
+      "https://www.aistudios.com/":"Сервис для создания реалистичных видео, созданных с помощью ИИ, используя только текст, требуется авторизация, есть бесплатный план",
+      "https://jiji.ru/":"Поисковая система с ИИ",
+      "https://artifica.ru/":"Сервис для генерации изображений, требуется авторизация",
+      "https://marble.worldlabs.ai/":"Сервис для генерации целых миров, требуется авторизация"
+  };     
          
   function countElements()
   {

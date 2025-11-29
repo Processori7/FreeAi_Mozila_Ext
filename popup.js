@@ -1698,8 +1698,21 @@ listItems.forEach((li) => {
       "https://www.aistudios.com/":"Сервис для создания реалистичных видео, созданных с помощью ИИ, используя только текст, требуется авторизация, есть бесплатный план",
       "https://jiji.ru/":"Поисковая система с ИИ",
       "https://artifica.ru/":"Сервис для генерации изображений, требуется авторизация",
-      "https://marble.worldlabs.ai/":"Сервис для генерации целых миров, требуется авторизация"
-  };     
+      "https://marble.worldlabs.ai/":"Сервис для генерации целых миров, требуется авторизация",
+      "https://nouswise.com/homepage":"Поисковая система с ИИ",
+      "https://www.dorkgpt.com/":"Генератор Google Dorks",
+      "https://zenmux.ai/settings/chat?chatId=2547CHHiXMPi16898796":"Сервис позволяет использовать NanoBanaPro и Gemeni 3, требуется авторизация",
+      "https://pebblely.com/":"Сервис позволяет превратить скучные изображения продуктов в красивые маркетинговые активы любого размера, требуется авторизация",
+      "https://d37ozmhmvu2kcg.cloudfront.net/":"Perplexed - поисковая система с ИИ",
+      "https://ai-sdk-gateway-demo.labs.vercel.dev/":"Сервис позволяет взаимодействовать с различными LLM",
+      "https://download.kodacode.ru/":"Документация по использованию Koda CLI, это агент для написания кода и помощи в отладке",
+      "https://qwenlm.github.io/qwen-code-docs/en/":"Документация по использованию Qwen CLI, это агент для написания кода и помощи в отладке",
+      "https://github.com/google-gemini/gemini-cli":"Документация по использованию Gemeni CLI, это агент для написания кода и помощи в отладке",
+      "https://huggingface.co/spaces/black-forest-labs/FLUX.2-dev":"Модель для генерации реалистичных изображений",
+      "https://playground.bfl.ai/image/generate":"Сервис для тестирования моеделей от Black Forest Labs, требуется авторизация",
+      "https://www.coze.com/":"Сервис позволяет внедрять различные LLM модели с плагинами в приложения, создавать ботов и не только, требуется авторизация",
+      "https://huggingface.co/spaces/mrfakename/Z-Image-Turbo":"Меодель для генерации картинок"
+  };   
          
   function countElements()
   {

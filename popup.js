@@ -1711,8 +1711,15 @@ listItems.forEach((li) => {
       "https://huggingface.co/spaces/black-forest-labs/FLUX.2-dev":"Модель для генерации реалистичных изображений",
       "https://playground.bfl.ai/image/generate":"Сервис для тестирования моеделей от Black Forest Labs, требуется авторизация",
       "https://www.coze.com/":"Сервис позволяет внедрять различные LLM модели с плагинами в приложения, создавать ботов и не только, требуется авторизация",
-      "https://huggingface.co/spaces/mrfakename/Z-Image-Turbo":"Меодель для генерации картинок"
-  };   
+      "https://huggingface.co/spaces/mrfakename/Z-Image-Turbo":"Меодель для генерации картинок",
+      "https://copilot.microsoft.com/":"Сервис для работы с различными ИИ от Microsoft",
+      "https://algion.dev/":"Сервис предоставляет бесплатные API для взаимодействия с различнми LLM, ограничение - 150 запросов с 1 IP",
+      "https://chat.gradient.network/":"Сервис предоставляте доступ к различным LLM моделям",
+      "https://apiscout.ai/":"Сервис предоставляте доступ к различным LLM моделям",
+      "https://photokit.com/editor/":"Редактор изображений",
+      "https://typli.ai/ai-text-generator":"Сервис предоставляте доступ к различным LLM моделям",
+      "https://chatbotchatapp.com/":"Сервис предоставляте доступ к различным LLM моделям и предоставляет дополнительные инструменты"
+  };    
          
   function countElements()
   {

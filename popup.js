@@ -1714,12 +1714,21 @@ listItems.forEach((li) => {
       "https://huggingface.co/spaces/mrfakename/Z-Image-Turbo":"Меодель для генерации картинок",
       "https://copilot.microsoft.com/":"Сервис для работы с различными ИИ от Microsoft",
       "https://algion.dev/":"Сервис предоставляет бесплатные API для взаимодействия с различнми LLM, ограничение - 150 запросов с 1 IP",
-      "https://chat.gradient.network/":"Сервис предоставляте доступ к различным LLM моделям",
-      "https://apiscout.ai/":"Сервис предоставляте доступ к различным LLM моделям",
+      "https://chat.gradient.network/":"Сервис предоставляет доступ к различным LLM моделям",
+      "https://apiscout.ai/":"Сервис предоставляет доступ к различным LLM моделям",
       "https://photokit.com/editor/":"Редактор изображений",
-      "https://typli.ai/ai-text-generator":"Сервис предоставляте доступ к различным LLM моделям",
-      "https://chatbotchatapp.com/":"Сервис предоставляте доступ к различным LLM моделям и предоставляет дополнительные инструменты"
-  };    
+      "https://typli.ai/ai-text-generator":"Сервис предоставляет доступ к различным LLM моделям",
+      "https://chatbotchatapp.com/":"Сервис предоставляте доступ к различным LLM моделям и предоставляет дополнительные инструменты",
+      "https://labs.google/fx/tools/flow":"Сервис позволяет бесплатно использовать NanoBana Pro и Google VEO, требуется авторизация",
+      "https://modelscope.ai/models":"Сервис предоставляет API для множества LLM, есть ограничения ",
+      "https://ai.io.net/ai/app/new":"Сервис предоставляет доступ к различным LLM моделям",
+      "https://lucidquery.com/":"Сервис предоставляет доступ к различным LLM моделям",
+      "https://tokenfactory.nebius.com/playground":"Сервис предоставляет доступ к различным LLM моделям",
+      "https://opencode.ai/":"Документация по использованию Opencode CLI, это агент для написания кода и помощи в отладке",
+      "https://skillsmp.com/":"Сборник различных скилов для ИИ",
+      "https://github.com/IridiumIO/CompactGUI":"CompactGUI - инструмент для сжатия файлов без потери качества и ускорения работы системы",
+      "https://github.com/blader/humanizer-ai-text":"Скилл для очелавечивания ИИ текста"
+  }; 
          
   function countElements()
   {

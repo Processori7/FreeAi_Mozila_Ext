@@ -1727,8 +1727,16 @@ listItems.forEach((li) => {
       "https://opencode.ai/":"Документация по использованию Opencode CLI, это агент для написания кода и помощи в отладке",
       "https://skillsmp.com/":"Сборник различных скилов для ИИ",
       "https://github.com/IridiumIO/CompactGUI":"CompactGUI - инструмент для сжатия файлов без потери качества и ускорения работы системы",
-      "https://github.com/blader/humanizer-ai-text":"Скилл для очелавечивания ИИ текста"
-  }; 
+      "https://github.com/blader/humanizer-ai-text":"Скилл для очелавечивания ИИ текста",
+      "https://www.airbrush.ai/":"Сервис для генерации изображений",
+      "https://www.k2think.ai/":"Сервис предоставляет доступ к Kimi K2",
+      "https://build.nvidia.com/":"Сервис предоставляет доступ к различным LLM",
+      "https://console.groq.com/home":"Сервис предоставляет доступ к различным LLM моделям",
+      "https://github.com/marketplace?type=models":"Сервис предоставляет доступ к различным LLM моделям от разных компаний, есть бесплатные модели, а также модели с платным доступом",
+      "https://arena.ai/":"Сервис предоставляет доступ к различным LLM моделям от разных компаний",
+      "https://chat.falconllm.tii.ae/":"Сервис предоставляет доступ к различным LLM моделям Falcon",
+      "https://www.recraft.ai/blog/introducing-recraft-v4-design-taste-meets-image-generation":"Генератор картинок специально для дизайнеро"
+  };    
          
   function countElements()
   {

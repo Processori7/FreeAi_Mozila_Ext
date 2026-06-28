@@ -25,6 +25,9 @@ This menu allows you to fully customize the design of the extension for yourself
 - Background color of the elements  
 - The color of the text of the elements
 
+## Middle-click copy
+Middle-click (scroll wheel) on any service copies its URL to clipboard. Green flash confirms the copy.
+
 # Useing
 
 Download here: https://addons.mozilla.org/addon/free-ai-services/
@@ -82,6 +85,9 @@ Thank you for your help with the layout and design of [ShikoDay](https://github.
 - Цвет заголовков
 - Цвет фона элементов  
 - Цвет текста элементов  
+
+## Копирование средним кликом
+Средняя кнопка мыши (колёсико) по любому сервису копирует его URL в буфер обмена. Зелёная вспышка подтверждает копирование.
 
 # Использование 
 
